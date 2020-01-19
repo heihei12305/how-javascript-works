@@ -3,7 +3,8 @@
 > Contributors: [@Troland](https://github.com/Troland/) [@moyuling](https://github.com/moyuling) [@三月](https://github.com/heaven2049)。
 >
 > 本文是翻译介绍 JavaScript 的工作原理的，该系列原文还在更新中，原文见[这里](https://blog.sessionstack.com/tagged/tutorial)。
-
+>
+> gitbook小书🔗[https://heihei12305.gitbook.io/how-javascript-works/](https://heihei12305.gitbook.io/how-javascript-works/)
 ## 目录结构
 
 * 第一章：[语言引擎，运行时和调用栈概述](overview.md)
