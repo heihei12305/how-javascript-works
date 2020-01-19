@@ -6,13 +6,13 @@
 
 ## 概述
 
-在 [前述文章](https://blog.sessionstack.com/how-javascript-works-the-internals-of-shadow-dom-how-to-build-self-contained-components-244331c4de6e)中，我们介绍了 Shadow DOM 接口和一些其它概念，而这些都是网页组件的组成部分。网页组件背后的思想即通过创建颗粒化，模块化和可复用的元素来扩展 HTML 内置功能。这是一个已经被所有主流浏览器兼容的相对崭新的 W3C 标准且可以被用在生产环境之中，虽然不兼容的浏览器需要使用垫片库(将在随后的章节中进行讨论)。
+在 [前述文章](https://blog.sessionstack.com/how-javascript-works-the-internals-of-shadow-dom-how-to-build-self-contained-components-244331c4de6e)中，我们介绍了 Shadow DOM 接口和一些其它概念，而这些都是网页组件的组成部分。网页组件背后的思想即通过创建颗粒化，模块化和可复用的元素来扩展 HTML 内置功能。这是一个已经被所有主流浏览器兼容的相对崭新的 W3C 标准且可以被用在生产环境之中，虽然不兼容的浏览器需要使用垫片库\(将在随后的章节中进行讨论\)。
 
 正如开发者所知，浏览器为构建网站和网页程序提供了一些重要的开发工具。我们所说的 HTML，CSS 和 JavaScript 即开发者使用 HTML 来构建结构，CSS 进行样式化然后使用 JavaScript 来让页面动起来。然而，在网页组件出现之前，把 JavaScript 脚本和 HTML 结构组合起来并非易事。
 
-本文将阐述网页组件的基石-自定义元素。总之，开发者可以使用自定义元素接口来创建包含 JavaScript 逻辑和样式的自定义元素(正如名称的字面意思)。许多开发者会把自定义元素和 shadow DOM 混为一谈。但是，他们是完全不同的概念且它们互补而不是可以相互替代的。
+本文将阐述网页组件的基石-自定义元素。总之，开发者可以使用自定义元素接口来创建包含 JavaScript 逻辑和样式的自定义元素\(正如名称的字面意思\)。许多开发者会把自定义元素和 shadow DOM 混为一谈。但是，他们是完全不同的概念且它们互补而不是可以相互替代的。
 
-一些框架(比如 Angular，React) 试图通过引进其自有概念来解决同样的问题。开发者可以把自定义元素和 Angular 的指令或者 React 组件进行对比。然而，自定义元素是浏览器原生的且只需要原生 JavaScript，HTML 和 CSS。当然了，这并不意味着它可以取代一个典型的 JavaScript 框架。现代框架不仅仅为开发者提供模仿自定义元素行为的能力。因此，可以同时使用框架和自定义元素。
+一些框架\(比如 Angular，React\) 试图通过引进其自有概念来解决同样的问题。开发者可以把自定义元素和 Angular 的指令或者 React 组件进行对比。然而，自定义元素是浏览器原生的且只需要原生 JavaScript，HTML 和 CSS。当然了，这并不意味着它可以取代一个典型的 JavaScript 框架。现代框架不仅仅为开发者提供模仿自定义元素行为的能力。因此，可以同时使用框架和自定义元素。
 
 ## 接口
 
@@ -23,14 +23,13 @@
   包含三个参数：自定义元素的可用标签名称，自定义元素类定义及选项参数对象。目前仅支持一个选项参数：`extends` 指定想要扩展的 HTML 内置元素名称的字符串。用来创建定制化内置元素。
 
 * `get(tagName)` －若元素已经定义则返回自定义元素的构造函数否则返回 undefined。只有一个参数：自定义元素的可用标签名称。
-
 * `whenDefined(tagName)`－返回一个 promise 对象，当定义自定义元素即解析。若元素已定义则立即进行解析。若自定义元素标签名称不可用则摒弃 promise。只有一个参数：自定义元素的可用标签名称。
 
 ## 如何创建自定义元素
 
 创建自定义元素实际上就是小菜一碟。开发者只需要做两件事：创建扩展 `HTMLElement` 类元素的类定义，然后以合适的名称注册元素。
 
-```
+```text
 class MyCustomElement extends HTMLElement {
   constructor() {
     super();
@@ -45,7 +44,7 @@ customElements.define('my-custom-element', MyCustomElement);
 
 或者如你所愿，可以使用匿名类以防止弄乱当前作用域
 
-```
+```text
 customElements.define('my-custom-element', class extends HTMLElement {
   constructor() {
     super();
@@ -60,9 +59,9 @@ customElements.define('my-custom-element', class extends HTMLElement {
 
 ## 自定义元素所解决的问题
 
-实际上，问题是啥？**嵌套 DIV** 是问题之一。嵌套 Div 是啥？在现代网页程序中这是一个非常常见的现象，开发者会使用多个嵌套块状元素(div 互相嵌套之类)。
+实际上，问题是啥？**嵌套 DIV** 是问题之一。嵌套 Div 是啥？在现代网页程序中这是一个非常常见的现象，开发者会使用多个嵌套块状元素\(div 互相嵌套之类\)。
 
-```
+```text
 <div class="top-container">
   <div class="middle-container">
     <div class="inside-container">
@@ -86,7 +85,7 @@ customElements.define('my-custom-element', class extends HTMLElement {
 
 那么传统 HTML 结构类似如下：
 
-```
+```text
 <div class="primary-toolbar toolbar">
   <div class="toolbar">
     <div class="toolbar-button">
@@ -131,7 +130,7 @@ customElements.define('my-custom-element', class extends HTMLElement {
 
 但想象下如果可以使用类似如下代码：
 
-```
+```text
 <primary-toolbar>
   <toolbar-group>
     <toolbar-button class="icon-undo"></toolbar-button>
@@ -148,7 +147,7 @@ customElements.define('my-custom-element', class extends HTMLElement {
 
 我将会给出一个简单的示例而你就会明白。假设有如下元素：
 
-```
+```text
 <div class="my-custom-element">
   <input type="text" class="email" />
   <button class="submit"></button>
@@ -159,13 +158,13 @@ customElements.define('my-custom-element', class extends HTMLElement {
 
 若使用如下码岂不会更好？
 
-```
+```text
 <my-custom-element></my-custom-element>
 ```
 
 现代网页程序不仅仅只有静态 HTML。开发者需要做交互。这就需要 JavaScript。一般来说，开发者需要做的即创建一些元素然后在上面监听事件以响应用户输入。点击，拖拽或者悬浮事件等等。
 
-```
+```text
 var myDiv = document.querySelector('.my-custom-element');
 
 myDiv.addEventListener('click', () => {
@@ -173,7 +172,7 @@ myDiv.addEventListener('click', () => {
 });
 ```
 
-```
+```text
 <div class="my-custom-element">
   I have not been clicked yet.
 </div>
@@ -181,7 +180,7 @@ myDiv.addEventListener('click', () => {
 
 使用自定义元素接口可以把所有的逻辑封装进元素自身。以下代码可以实现和上面代码一样的功能：
 
-```
+```text
 class MyCustomElement extends HTMLElement {
   constructor() {
     super();
@@ -197,7 +196,7 @@ class MyCustomElement extends HTMLElement {
 customElements.define('my-custom-element', MyCustomElement);
 ```
 
-```
+```text
 <my-custom-element>
   I have not been clicked yet
 </my-custom-element>
@@ -211,9 +210,9 @@ customElements.define('my-custom-element', MyCustomElement);
 
 在创建自定义元素之前，开发者需要遵守如下特殊规则：
 
-* 名称必须包含一个破折号 - 。这样 HTML 解析器就可以把自定义元素和内置元素区分开来。这样可以保证不会和内置元素出现命名冲突的问题(不管是现在或者将来当添加其它元素的时候)。比如，`<my-custom-element>` 是正确的而 `myCustomElement` 和 `<my_custom_element>` 则不然。
+* 名称必须包含一个破折号 - 。这样 HTML 解析器就可以把自定义元素和内置元素区分开来。这样可以保证不会和内置元素出现命名冲突的问题\(不管是现在或者将来当添加其它元素的时候\)。比如，`<my-custom-element>` 是正确的而 `myCustomElement` 和 `<my_custom_element>` 则不然。
 * 不允许重复注册标签名称。重复注册标签名称会导致浏览器抛出 `DOMException` 错误。不可以覆盖已注册自定义元素。
-* 自定义元素不可以自关闭。HTML 解析器只允许一小撮内置元素可以自关闭(比如 `<img>`，`<link>`，`<br>`)。
+* 自定义元素不可以自关闭。HTML 解析器只允许一小撮内置元素可以自关闭\(比如 `<img>`，`<link>`，`<br>`\)。
 
 ## 功能
 
@@ -221,7 +220,7 @@ customElements.define('my-custom-element', MyCustomElement);
 
 最好用的功能之一即元素的类定义可以引用 DOM 元素自身。这意味着开发者可以直接使用 `this` 来直接监听事件，访问 DOM 属性，访问 DOM 元素子节点等等。
 
-```
+```text
 class MyCustomElement extends HTMLElement {
   // ...
 
@@ -243,15 +242,15 @@ class MyCustomElement extends HTMLElement {
 
 `constructor`
 
-每当创建或者更新元素会触发构造函数(随后再详细讲解下)。一般情况会在该阶段初始化状态，监听事件，创建 shadow DOM 等等。需要记住的是必须总是在构造函数中调用 `super()`。
+每当创建或者更新元素会触发构造函数\(随后再详细讲解下\)。一般情况会在该阶段初始化状态，监听事件，创建 shadow DOM 等等。需要记住的是必须总是在构造函数中调用 `super()`。
 
 `connectedCallback`
 
-每当在 DOM 中添加元素的时候会调用 `connectedCallback` 方法。可以用来(推荐)延迟执行某些代码直到元素完全渲染于页面上时候调用(比如获取一个资源)。
+每当在 DOM 中添加元素的时候会调用 `connectedCallback` 方法。可以用来\(推荐\)延迟执行某些代码直到元素完全渲染于页面上时候调用\(比如获取一个资源\)。
 
 `disconnectedCallback`
 
-与 `connectedCallback `相反，当元素被从 DOM 删除时调用 `disconnectedCallback` 方法。一般用于释放资源的时候调用。需要注意的是若用户关闭选项卡不会调用 `disconnectedCallback` 方法。因此，首先开发者需要注意初始化代码。
+与 `connectedCallback`相反，当元素被从 DOM 删除时调用 `disconnectedCallback` 方法。一般用于释放资源的时候调用。需要注意的是若用户关闭选项卡不会调用 `disconnectedCallback` 方法。因此，首先开发者需要注意初始化代码。
 
 `attributeChangedCallback`
 
@@ -277,7 +276,7 @@ class MyCustomElement extends HTMLElement {
 
 自定义元素自身没有该功能，但是有办法可以实现。为了在自定义元素中实现该相同的功能，开发者需要定义属性的 getters 和 setters 方法。
 
-```
+```text
 class MyCustomElement extends HTMLElement {
   // ...
 
@@ -301,7 +300,7 @@ class MyCustomElement extends HTMLElement {
 
 开发者不仅仅可以使用自定义元素接口创建新的 HTML 元素还可以用来扩展现有的 HTML 元素。而且该接口在内置元素和其它自定义元素中工作得很好。仅仅只需要扩展元素的类定义即可。
 
-```
+```text
 class MyAwesomeButton extends MyButton {
   // ...
 }
@@ -311,7 +310,7 @@ customElements.define('my-awesome-button', MyAwesomeButton);
 
 或者当扩展内置元素时，开发者需要为 `customElements.define(...)` 函数添加第三个 `extends` 的参数，参数值为需要扩展的元素标签名称。由于许多内置元素共享相同的 DOM 接口，`extends` 参数会告诉浏览器需要扩展的目标元素。若没有指定需要扩展的元素，浏览器将不会知道需要扩展的功能类别 。
 
-```
+```text
 class MyButton extends HTMLButtonElement {
   // ...
 }
@@ -321,7 +320,7 @@ customElements.define('my-button', MyButton, {extends: 'button'});
 
 一个可扩展原生元素也被称为可定制化内置元素。
 
-开发者需要记住的经验法则即总是扩展存在的 HTML 元素。然后，一点点往里添加功能。这样就可以保留元素之前的功能(属性，函数)。
+开发者需要记住的经验法则即总是扩展存在的 HTML 元素。然后，一点点往里添加功能。这样就可以保留元素之前的功能\(属性，函数\)。
 
 请注意现在只有 Chrome 67+ 才支持定制化内置元素。以后，其它浏览器也会实现，但是 Safari 完全没有实现该功能。
 
@@ -329,7 +328,7 @@ customElements.define('my-button', MyButton, {extends: 'button'});
 
 如上所述，可以使用 `customElements.define(...)` 方法注册自定义元素。但这并不意味着，开发者必须首先注册元素。可以推迟在之后某个时间注册自定义元素。甚至可以在往 DOM 中添加元素后再注册元素也是可以的。这一过程称为更新元素。开发者可以使用 `customElements.whenDefined(...)` 方法获取元素的定义时间。开发者传入元素标签名，返回一个 promise 对象，然后当元素注册的时候解析。
 
-```
+```text
 customElements.whenDefined('my-custom-element').then(_ => {
   console.log('My custom element is defined');
 });
@@ -341,11 +340,11 @@ customElements.whenDefined('my-custom-element').then(_ => {
 
 ## Shadow DOM
 
-如前所述，需要把自定义元素和 shadow DOM 一起使用。前者用来把 JavaScript 逻辑封装进元素而后者用来为一小段  DOM 创建一个不为外部影响的隔绝环境。建议查看之前专门介绍 [shadow DOM](https://blog.sessionstack.com/how-javascript-works-the-internals-of-shadow-dom-how-to-build-self-contained-components-244331c4de6e) 的文章以便更好地理解 shadow DOM 概念。
+如前所述，需要把自定义元素和 shadow DOM 一起使用。前者用来把 JavaScript 逻辑封装进元素而后者用来为一小段 DOM 创建一个不为外部影响的隔绝环境。建议查看之前专门介绍 [shadow DOM](https://blog.sessionstack.com/how-javascript-works-the-internals-of-shadow-dom-how-to-build-self-contained-components-244331c4de6e) 的文章以便更好地理解 shadow DOM 概念。
 
 只需调用 `this.attachShadow` 就可以在自定义元素内使用 shadow DOM
 
-```
+```text
 class MyCustomElement extends HTMLElement {
   // ...
 
@@ -367,7 +366,7 @@ class MyCustomElement extends HTMLElement {
 
 通过声明一个 DOM 片段来使用 `<template>`，该标签内容只会被解析而不会在页面上渲染。
 
-```
+```text
 <template id="my-custom-element-template">
   <div class="my-custom-element">
     <input type="text" class="email" />
@@ -376,7 +375,7 @@ class MyCustomElement extends HTMLElement {
 </template>
 ```
 
-```
+```text
 let myCustomElementTemplate = document.querySelector('#my-custom-element-template');
 
 class MyCustomElement extends HTMLElement {
@@ -399,7 +398,7 @@ class MyCustomElement extends HTMLElement {
 
 那么，我们讲解了 HTML 和 JavaScript，现在还剩下 CSS。显然，需要样式化元素。开发者可以在 shadow DOM 中添加样式但是用户如何从外部样式化元素呢？答案很简单－只需要和一般的内置元素一样写样式即可。
 
-```
+```text
 my-custom-element {
   border-radius: 5px;
   width: 30%;
@@ -410,9 +409,9 @@ my-custom-element {
 
 请注意外部定义的样式比元素内部定义的样式优先级高，外部样式会覆盖掉元素内定义的样式。
 
-开发者需要明白有时候页面渲染，然后会在某些时刻会发现无样式内容闪烁(FOUC)。开发者可以通过为未定义组件定义样式及当元素已定义的时候使用一些动画过渡效果。使用 :defined 选择器来达成这一效果。
+开发者需要明白有时候页面渲染，然后会在某些时刻会发现无样式内容闪烁\(FOUC\)。开发者可以通过为未定义组件定义样式及当元素已定义的时候使用一些动画过渡效果。使用 :defined 选择器来达成这一效果。
 
-```
+```text
 my-button:not(:defined) {
   height: 20px;
   width: 50px;
@@ -424,7 +423,7 @@ my-button:not(:defined) {
 
 HTML 规范非常灵活且允许开发者任意声明标签。若不被浏览器解析则会解析为 `HTMLUnknownElement`。
 
-```
+```text
 var element = document.createElement('thisElementIsUnknown');
 
 if (element instanceof HTMLUnknownElement) {
@@ -434,7 +433,7 @@ if (element instanceof HTMLUnknownElement) {
 
 但是这并不适用于自定义元素。还记得讨论定义自定义元素时候的特殊命名规则吗？原因是因为当浏览器发现一个自定义元素的名称有效的时候，浏览器会把它解析为 `HTMLElement` ，然后浏览器会把它看作一个未定义的自定义元素。
 
-```
+```text
 var element = document.createElement('this-element-is-undefined');
 
 if (element instanceof HTMLElement) {
@@ -442,17 +441,17 @@ if (element instanceof HTMLElement) {
 }
 ```
 
-在视觉上， HTMLElement  和 HTMLUnknownElement 可能没啥不同，但是需要注意其它地方。解析器会区别对待这两种元素。具有有效自定义名称的元素会被看作拥有自定义元素实现。在定义实现细节之前该自定义元素会被看成一个空 div 元素。而一个未定义元素没有实现任何内置元素的任何方法或属性。
+在视觉上， HTMLElement 和 HTMLUnknownElement 可能没啥不同，但是需要注意其它地方。解析器会区别对待这两种元素。具有有效自定义名称的元素会被看作拥有自定义元素实现。在定义实现细节之前该自定义元素会被看成一个空 div 元素。而一个未定义元素没有实现任何内置元素的任何方法或属性。
 
 ## 浏览器兼容
 
-custom elements 第一版是在 Chrome 36+ 中引入的。被称为自定义元素接口 v0，虽然现在仍然可用，但是已经被弃用并被认为是糟糕的实现。若想要学习 v0 版，可以阅读这篇[文章](https://www.html5rocks.com/en/tutorials/webcomponents/customelements/)。从 Chrome 54 和 Safari 10.1(虽然只有部分支持)  开始支持自定义元素接口 v1，微软 Edge 还处于其原型设计阶段而 Mozilla 从 v50 开始支持，但默认不支持需要显式启用。目前只有 webkit 浏览器完全支持。然而，如上所述，可以使用垫片库兼容到包括 IE11 在内的所有浏览器。
+custom elements 第一版是在 Chrome 36+ 中引入的。被称为自定义元素接口 v0，虽然现在仍然可用，但是已经被弃用并被认为是糟糕的实现。若想要学习 v0 版，可以阅读这篇[文章](https://www.html5rocks.com/en/tutorials/webcomponents/customelements/)。从 Chrome 54 和 Safari 10.1\(虽然只有部分支持\) 开始支持自定义元素接口 v1，微软 Edge 还处于其原型设计阶段而 Mozilla 从 v50 开始支持，但默认不支持需要显式启用。目前只有 webkit 浏览器完全支持。然而，如上所述，可以使用垫片库兼容到包括 IE11 在内的所有浏览器。
 
 ## 检测可用性
 
 通过检查 `window` 对象中的 `customElements` 属性是否可用来检查浏览器是否支持自定义元素。
 
-```
+```text
 const supportsCustomElements = 'customElements' in window;
 
 if (supportsCustomElements) {
@@ -462,7 +461,7 @@ if (supportsCustomElements) {
 
 否则需要使用垫片库：
 
-```
+```text
 function loadScript(src) {
   return new Promise(function(resolve, reject) {
     const script = document.createElement('script');
@@ -488,9 +487,9 @@ if (supportsCustomElements) {
 总之，网页组件标准中的自定义元素为开发者提供了如下功能：
 
 * 把 JavaScript 和 CSS 样式整合入 HTML 元素
-* 允许开发者扩展已有的 HTML 元素(内置和其它自定义元素)
+* 允许开发者扩展已有的 HTML 元素\(内置和其它自定义元素\)
 * 不需要其它库或者框架的支持。只需要原生 JavaScript，HTML 和 CSS 还有可选的垫片库来支持旧浏览器。
-* 可以和其它网页组件功能无缝衔接(shadow DOM，模板，插槽等)。
+* 可以和其它网页组件功能无缝衔接\(shadow DOM，模板，插槽等\)。
 * 和浏览器开发者工具紧密集成在一起。
 * 使用已知的可访问功能
 
@@ -498,6 +497,7 @@ if (supportsCustomElements) {
 
 参考资料：
 
-* <https://developers.google.com/web/fundamentals/web-components/customelements>
-* <https://www.html5rocks.com/en/tutorials/webcomponents/customelements/>
-* <https://github.com/w3c/webcomponents/>
+* [https://developers.google.com/web/fundamentals/web-components/customelements](https://developers.google.com/web/fundamentals/web-components/customelements)
+* [https://www.html5rocks.com/en/tutorials/webcomponents/customelements/](https://www.html5rocks.com/en/tutorials/webcomponents/customelements/)
+* [https://github.com/w3c/webcomponents/](https://github.com/w3c/webcomponents/)
+

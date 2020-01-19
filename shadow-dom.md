@@ -19,9 +19,9 @@
 
 本章主要讨论 **Shadow DOM**。
 
-Shadow DOM 是一个被设计用来构建基于组件(积木式)的网页程序的工具。它为开发者可能经常遇到过的问题提供了解决方案：
+Shadow DOM 是一个被设计用来构建基于组件\(积木式\)的网页程序的工具。它为开发者可能经常遇到过的问题提供了解决方案：
 
-* **隔离的 DOM**：组件的 DOM 是独立的(比如 `document.querySelector()` 无法检索到组件 shadow DOM 下的f元素节点)。这样就可以简化网页程序中的 CSS 选择器，因为 DOM 组件是互不影响，这样就允许开发者可以随心所欲地使用更加通用的 id/class 命名而不用担心命名冲突。
+* **隔离的 DOM**：组件的 DOM 是独立的\(比如 `document.querySelector()` 无法检索到组件 shadow DOM 下的f元素节点\)。这样就可以简化网页程序中的 CSS 选择器，因为 DOM 组件是互不影响，这样就允许开发者可以随心所欲地使用更加通用的 id/class 命名而不用担心命名冲突。
 * **局部样式**: shadow DOM 内定义的样式不会污染 shadow DOM 之外的元素。Style 样式规则不会泄漏且页面样式也不会污染 shadow DOM 内的元素样式。
 * **组合**：为开发者的组件设计一个声明式，基于标签的接口。
 
@@ -40,7 +40,7 @@ Shadow DOM 是一个被设计用来构建基于组件(积木式)的网页程序�
 
 一个 **shadow 根** 即是一段挂载到 "宿主" 元素下的文档碎片。挂载了 shadow 根即表示宿主元素包含 shadow DOM。调用 `element.attachShadow()` 方法来为元素创建 shadow DOM:
 
-```
+```text
 var header = document.createElement('header');
 var shadowRoot = header.attachShadow({mode: 'open'});
 var paragraphElement = document.createElement('p');
@@ -67,7 +67,7 @@ Shadow DOM 引入如下功能，可以用来组合元素。
 
 此即组件的书写标记。该 DOM 存在于组件的 shadow DOM 之外。它是元素的实际子元素。假设开发者创建了一个名为 `<better-button>` 的自定义组件，扩展原生 button 标签及想在组件内部添加一个图片和一些文本。大概如下：
 
-```
+```text
 <extended-button>
   <!-- image 和 span 即为扩展 button 的 light DOM -->
   <img src="boot.png" slot="image">
@@ -77,13 +77,13 @@ Shadow DOM 引入如下功能，可以用来组合元素。
 
 「扩展 button」即开发者自定义组件，而其中的 HTML 即为 Light DOM 且是使用组件的用户所添加的。
 
-这里的 Shadow DOM 即开发者创建的组件(「扩展 button」)。Shadow DOM 仅存在于组件内部且在其中定义其内部结构，局部样式及封装了组件实现详情。
+这里的 Shadow DOM 即开发者创建的组件\(「扩展 button」\)。Shadow DOM 仅存在于组件内部且在其中定义其内部结构，局部样式及封装了组件实现详情。
 
 ## 扁平 DOM 树
 
 浏览器分发 light DOM 的结果即，由用户在 Shadow DOM 内部创建的 HTML 内容，这些 HTML 内容构成了自定义组件的结构，渲染出最后的产品界面。扁平树即开发者在开发者工具中看到的内容和页面的渲染结果。
 
-```
+```text
 <extended-button>
   #shadow-root
   <style>…</style>
@@ -100,11 +100,11 @@ Shadow DOM 引入如下功能，可以用来组合元素。
 
 ## 模板
 
-当开发者不得不在网页上复用相同的标记结构的时候，最好使用某种模板而不是重复书写相同的页面结构。以前是可以实现的，但是现在可以使用 <template> (现代浏览器均兼容)元素轻易地实现该功能。该元素及其内容不会在 DOM 中渲染，但是可以使用 JavaScript 来引用其中的内容。
+当开发者不得不在网页上复用相同的标记结构的时候，最好使用某种模板而不是重复书写相同的页面结构。以前是可以实现的，但是现在可以使用  \(现代浏览器均兼容\)元素轻易地实现该功能。该元素及其内容不会在 DOM 中渲染，但是可以使用 JavaScript 来引用其中的内容。
 
 来看一个简单示例：
 
-```
+```text
 <template id="my-paragraph">
   <p> Paragraph content. </p>
 </template>
@@ -112,7 +112,7 @@ Shadow DOM 引入如下功能，可以用来组合元素。
 
 上面的内容不会在页面中渲染，除非使用 JavaScript 来引用其中的内容，然后使用类似如下的代码来挂载到 DOM 中：
 
-```
+```text
 var template = document.getElementById('my-paragraph');
 var templateContent = template.content;
 document.body.appendChild(templateContent);
@@ -126,7 +126,7 @@ document.body.appendChild(templateContent);
 
 让我们定义一个使用模板作为其 shadow DOM 渲染内容的网页组件。且称其为 `<my-paragraph>:`
 
-```
+```text
 customElements.define('my-paragraph',
  class extends HTMLElement {
    constructor() {
@@ -139,13 +139,13 @@ customElements.define('my-paragraph',
 });
 ```
 
-这里需要注意的是使用 [Node.cloneNode()](https://developer.mozilla.org/en-US/docs/Web/API/Node/cloneNode) 方法来复制模板内容挂载到 shadow 根下。
+这里需要注意的是使用 [Node.cloneNode\(\)](https://developer.mozilla.org/en-US/docs/Web/API/Node/cloneNode) 方法来复制模板内容挂载到 shadow 根下。
 
 另外，由于把模板的内容挂载到 shadow DOM 中，开发者可以在模板中使用 `<style>` 元素包含一些样式信息，该 `<style>` 元素随后会被封装进自定义元素里面。如果直接把模板挂载到标准 DOM 里面是不起作用的。
 
 比如，可以更改模板内容为如下：
 
-```
+```text
 <template id="my-paragraph">
   <style>
     p {
@@ -172,7 +172,7 @@ customElements.define('my-paragraph',
 
 让我们看一下以上模板添加一个插槽的代码如下：
 
-```
+```text
 <template id="my-paragraph">
   <p> 
     <slot name="my-text">Default text</slot> 
@@ -186,7 +186,7 @@ customElements.define('my-paragraph',
 
 如前所述，开发者可以随便写插槽内容：
 
-```
+```text
 <my-paragraph>
  <span slot="my-text">Let's have some different text!</span>
 </my-paragraph>
@@ -194,15 +194,11 @@ customElements.define('my-paragraph',
 
 所有可以被插入插槽的元素被称为[可插入元素](https://developer.mozilla.org/en-US/docs/Web/API/Slotable)；已插入插槽元素称为插槽元素。
 
-
-
 注意以上示例中插入的 `<span>` 元素即是插槽元素。它拥有一个 `slot` 属性，属性值和模板中插槽定义的 name 属性值相等。
-
-
 
 浏览器渲染之后，以上代码会创建如下扁平 DOM 树：
 
-```
+```text
 <my-paragraph>
   #shadow-root
   <p>
@@ -216,7 +212,7 @@ customElements.define('my-paragraph',
 
 **这里原文有误，有改动。**
 
-注意 `#shadow-root` 元素只是表示存在 Shadow DOM  而已。
+注意 `#shadow-root` 元素只是表示存在 Shadow DOM 而已。
 
 ## 样式化
 
@@ -231,9 +227,9 @@ customElements.define('my-paragraph',
 
 Shadow DOM 中的 CSS 选择器只影响组件内部的元素。实际上，这意味着开发者可以重复使用通用的 id/class 名称而不用担心和主页面上的其它样式发生冲突。简单的 CSS 选择器可以提高页面性能。
 
-让我们看一下如下 #shadow-root 中定义的一些样式：
+让我们看一下如下 \#shadow-root 中定义的一些样式：
 
-```
+```text
 #shadow-root
 <style>
   #container {
@@ -248,15 +244,15 @@ Shadow DOM 中的 CSS 选择器只影响组件内部的元素。实际上，这�
 <div id="container-items"></div>
 ```
 
-以上示例中的样式只会作用于 #shadow-root 内部。
+以上示例中的样式只会作用于 \#shadow-root 内部。
 
-开发者也可以在 #shadow-root 里面使用 <link> 元素来引入样式表，也只作用于 #shadow-root 内部。
+开发者也可以在 \#shadow-root 里面使用  元素来引入样式表，也只作用于 \#shadow-root 内部。
 
 ## :host 伪类
 
 `:host` 伪类允许开发者选择和样式化包含 shadow 树的宿主元素：
 
-```
+```text
 <style>
   :host {
     display: block; /* 默认情况下, 自定义元素是内联元素 */
@@ -268,17 +264,17 @@ Shadow DOM 中的 CSS 选择器只影响组件内部的元素。实际上，这�
 
 即当在主页面上定义了如下的样式：
 
-```
+```text
 my-paragraph {
   marbin-bottom: 40px;
 }
 
 <template id="my-paragraph">
-	<style>
-		:host {
+    <style>
+        :host {
       margin-bottom: 30px;/* 将不起作用，因为会被前面父页面已定义的样式覆盖 */
-		}
-	</style>
+        }
+    </style>
   <p> 
     <slot name="my-text">Default text</slot> 
   </p>
@@ -289,35 +285,35 @@ my-paragraph {
 
 `:host(<selector>)` 这样的功能样式允许开发者只样式化匹配 `<selector>` 的宿主元素。这是一个绝佳的方式，开发者可以在组件内部封装响应用户交互或者状态的行为，然后基于宿主元素来样式化内部节点。
 
-```
+```text
 <style>
   :host {
     opacity: 0.4;
   }
-  
+
   :host(:hover) {
     opacity: 1;
   }
-  
+
   :host([disabled]) { /* 宿主元素拥有 disabled 属性的样式. */
     background: grey;
     pointer-events: none;
     opacity: 0.4;
   }
-  
+
   :host(.pink) > #tabs {
     color: pink; /* 当宿主元素含有 pink 类时的选项卡样式. */
   }
 </style>
 ```
 
-## 使用 :host-context(<selector>) 伪类来定制化元素样式
+## 使用 :host-context\(\) 伪类来定制化元素样式
 
 `:host-context(<selector>)` 伪类找出宿主元素或者宿主元素任意的祖先元素匹配 `<selector>`。
 
 常用于定制化。例如，开发者通过为 `<html>` 或者 `<body>` 添加类来进行定制化：
 
-```
+```text
 <body class="lightheme">
   <custom-container>
   …
@@ -327,17 +323,15 @@ my-paragraph {
 
 或者
 
-```
+```text
 <custom-container class="lightheme">
   …
 </custom-container>
 ```
 
-
-
 当宿主元素的祖先元素包含有 .lightheme 类 `:host-context(.lightheme)` 将会样式化 `<fancy-tabs>`：
 
-```
+```text
 :host-context(.lightheme) {
   color: black;
   background: white;
@@ -350,7 +344,7 @@ my-paragraph {
 
 开发者可以从外部通过把标签名作为选择器来样式化组件宿主元素，如下：
 
-```
+```text
 custom-container {
   color: red;
 }
@@ -360,7 +354,7 @@ custom-container {
 
 例如，假设用户书写如下选择器：
 
-```
+```text
 custom-container {
   width: 500px;
 }
@@ -368,7 +362,7 @@ custom-container {
 
 将会覆盖如下组件样式规则 ：
 
-```
+```text
 :host {
   width: 300px;
 }
@@ -384,7 +378,7 @@ custom-container {
 
 让我们看如下示例：
 
-```
+```text
 <!-- 主页面 -->
 <style>
   custom-container {
@@ -398,7 +392,7 @@ custom-container {
 
 Shadow DOM 内部：
 
-```
+```text
 :host([background]) {
   background: var(--custom-container-bg, #CECECE);
   border-radius: 10px;
@@ -418,7 +412,7 @@ Shadow DOM API 可能用来操作插槽。
 
 当一个插槽的分发元素节点发生变化的时候触发 slotchange 事件。例如，当用户从 light DOM 中添加/删除子节点。
 
-```
+```text
 var slot = this.shadowRoot.querySelector('#some_slot');
 slot.addEventListener('slotchange', function(e) {
   console.log('Light DOM change');
@@ -427,9 +421,9 @@ slot.addEventListener('slotchange', function(e) {
 
 可以在元素的构造函数中创建 `MutationObserver` 来监听 light DOM 的其它类型的修改事件。前面文章中有介绍过 [MutationObserver 的内部构造及使用指南](https://blog.sessionstack.com/how-javascript-works-tracking-changes-in-the-dom-using-mutationobserver-86adc7446401)。
 
-## assignedNodes() 方法
+## assignedNodes\(\) 方法
 
-了解哪些元素是和插槽有关是很有用处的。调用 `slot.assignedNodes()` 可以找出哪些元素是由插槽渲染的。`flatten: true}` 选项会返回插槽的默认内容(若没有分发任何节点)。
+了解哪些元素是和插槽有关是很有用处的。调用 `slot.assignedNodes()` 可以找出哪些元素是由插槽渲染的。`flatten: true}` 选项会返回插槽的默认内容\(若没有分发任何节点\)。
 
 看一下如下示例：
 
@@ -441,7 +435,7 @@ slot.addEventListener('slotchange', function(e) {
 
 第一例中，我们将往插槽中添加内容：
 
-```
+```text
 <my-container>
   <span slot="slot1"> container text </span>
 </my-container>
@@ -465,7 +459,7 @@ Shadow DOM 中的事件冒泡的经过是值得注意的。
 
 事件目标被调整为维护 Shadow DOM 的封闭性。当事件被重新定位，看起来是由组件自身产生而不是组件的 Shadow DOM 内部元素。
 
-这里有传播出 Shadow DOM 的事件列表(还有一些只能在 Shadow DOM 内传播)：
+这里有传播出 Shadow DOM 的事件列表\(还有一些只能在 Shadow DOM 内传播\)：
 
 * **Focus 事件**：blur, focus, focusin, focusout
 * **鼠标事件**：click, dblclick, mousedown, mouseenter, mousemove 等.
@@ -481,7 +475,7 @@ Shadow DOM 中的事件冒泡的经过是值得注意的。
 
 让我们瞧瞧类似这样的事件分派：
 
-```
+```text
 var container = this.shadowRoot.querySelector('#container');
 container.dispatchEvent(new Event('containerchanged', {bubbles: true, composed: true}));
 ```
@@ -490,7 +484,7 @@ container.dispatchEvent(new Event('containerchanged', {bubbles: true, composed: 
 
 可以通过检查 attachShadow 来检查是否支持 Shadow DOM 功能：
 
-```
+```text
 const supportsShadowDOMV1 = !!HTMLElement.prototype.attachShadow;
 ```
 
@@ -498,7 +492,8 @@ const supportsShadowDOMV1 = !!HTMLElement.prototype.attachShadow;
 
 参考资料：
 
-* https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_shadow_DOM
-* https://developers.google.com/web/fundamentals/web-components/shadowdom
-* https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_templates_and_slots
-* https://www.html5rocks.com/en/tutorials/webcomponents/shadowdom-201/#toc-style-host
+* [https://developer.mozilla.org/en-US/docs/Web/Web\_Components/Using\_shadow\_DOM](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_shadow_DOM)
+* [https://developers.google.com/web/fundamentals/web-components/shadowdom](https://developers.google.com/web/fundamentals/web-components/shadowdom)
+* [https://developer.mozilla.org/en-US/docs/Web/Web\_Components/Using\_templates\_and\_slots](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_templates_and_slots)
+* [https://www.html5rocks.com/en/tutorials/webcomponents/shadowdom-201/\#toc-style-host](https://www.html5rocks.com/en/tutorials/webcomponents/shadowdom-201/#toc-style-host)
+

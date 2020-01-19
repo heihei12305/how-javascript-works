@@ -2,7 +2,7 @@
 
 > 原文请查阅[这里](https://blog.sessionstack.com/how-javascript-works-a-comparison-with-webassembly-why-in-certain-cases-its-better-to-use-it-d80945172d79)，略有改动，本文采用[知识共享署名 4.0 国际许可协议](http://creativecommons.org/licenses/by/4.0/)共享，BY [Troland](https://github.com/Troland)。
 
-**这是  JavaScript 工作原理的第六章。**
+**这是 JavaScript 工作原理的第六章。**
 
 现在，我们将会剖析 WebAssembly 的工作原理，而最重要的是它和 JavaScript 在性能方面的比对：加载时间，执行速度，垃圾回收，内存使用，平台 API 访问，调试，多线程以及可移植性。
 
@@ -34,7 +34,7 @@ WASM 让你在其中使用除 JavaScript 的语言以外的语言（比如 C, C+
 
 ![](https://user-images.githubusercontent.com/1475173/40056004-8a3ec756-587c-11e8-87e5-23f21b3e4805.png)
 
-<center>V8 技术：懒编译</center>
+V8 技术：懒编译
 
 左边是 JavaScript 源码，包含 JavaScript 函数。首先，源码先把字符串转换为记号以便于解析，之后生成一个[语法抽象树](https://en.wikipedia.org/wiki/Abstract_syntax_tree)。
 
@@ -44,9 +44,9 @@ WASM 让你在其中使用除 JavaScript 的语言以外的语言（比如 C, C+
 
 ![](https://user-images.githubusercontent.com/1475173/40056005-8a7d6920-587c-11e8-8b0b-2665efdd722a.png)
 
-<center>V8 管道设计</center>
+V8 管道设计
 
-现在，我们拥有 [TurboFan](https://github.com/v8/v8/wiki/TurboFan) ，它是 V8 的优化编译程序之一。当 JavaScript 运行的时候，大量的代码是在 V8 内部运行的。TurboFan  监视运行得慢的代码，引起性能瓶颈的地方及热点（内存使用过高的地方）以便优化它们。它把以上监视得到的代码推向后端即优化过的[即时编译器](https://en.wikipedia.org/wiki/Just-in-time_compilation)，该编译器把消耗大量 CPU 资源的函数转换为性能更优的代码。
+现在，我们拥有 [TurboFan](https://github.com/v8/v8/wiki/TurboFan) ，它是 V8 的优化编译程序之一。当 JavaScript 运行的时候，大量的代码是在 V8 内部运行的。TurboFan 监视运行得慢的代码，引起性能瓶颈的地方及热点（内存使用过高的地方）以便优化它们。它把以上监视得到的代码推向后端即优化过的[即时编译器](https://en.wikipedia.org/wiki/Just-in-time_compilation)，该编译器把消耗大量 CPU 资源的函数转换为性能更优的代码。
 
 它解决了性能的问题，但是缺点即是分析代码及辨别哪些代码需要优化的过程也是会消耗 CPU 资源的。这也即意味着更多的耗电量，特别是在手机设备。
 
@@ -54,7 +54,7 @@ WASM 让你在其中使用除 JavaScript 的语言以外的语言（比如 C, C+
 
 ![](https://user-images.githubusercontent.com/1475173/40056008-8b0416dc-587c-11e8-9d5f-9263ae8a8d53.png)
 
-<center>V8 管道设计 + WASM</center>
+V8 管道设计 + WASM
 
 wasm 在编译阶段就已经通过了代码优化。总之，解析也不需要了。你拥有优化后的二进制代码可以直接插入到后端（即时编译器）并生成机器码。编译器在前端已经完成了所有的代码优化工作。
 
@@ -64,7 +64,7 @@ wasm 在编译阶段就已经通过了代码优化。总之，解析也不需要
 
 ![](https://user-images.githubusercontent.com/1475173/40056007-8ac584b2-587c-11e8-9006-49c58276279f.png)
 
-<center>WebAssembly 可信和不可信状态</center>
+WebAssembly 可信和不可信状态
 
 举个栗子，一个 C++ 的程序的内存被编译为 WebAssembly，它是整段连续的没有空洞的内存块。wasam 中有一个可以用来提升代码安全性的功能即执行堆栈和线性内存隔离的概念。在 C++ 程序中，你有一块动态内存区，你从其底部分配获得内存堆栈，然后从其顶部获得内存来增加内存堆栈的大小。你可以获得一个指针然后在堆栈内存中遍历以操作你不应该接触到的变量。
 
@@ -74,7 +74,7 @@ WebAssembly 采用了完全不同的内存模型。执行堆栈和 WebAssembly �
 
 更多关于 JavaScript 内存模型和管理的文章详见[这里](https://blog.sessionstack.com/how-javascript-works-memory-management-how-to-handle-4-common-memory-leaks-3f28b94cfbec)。
 
-## 内存垃圾回收 
+## 内存垃圾回收
 
 你已经知晓 JavaScript 的内存管理是由内存垃圾回收器处理的。
 
@@ -130,7 +130,7 @@ WebAssembly 的最初版本主要是为了解决大量计算密集型的计算�
 
 你可以使用你熟悉的 OpenGL 绑定来编写 C++/Rust 程序，然后编译成 wasm。之后，它就可以在浏览器中运行。
 
-浏览下（在火孤中运行）－<http://s3.amazonaws.com/mozilla-games/tmp/2017-02-21-SunTemple/SunTemple.html>。这是运行于[Unreal engine](https://www.unrealengine.com/en-US/what-is-unreal-engine-4)（这是一个可以用来开发虚拟现实的开发套件）中的。
+浏览下（在火孤中运行）－[http://s3.amazonaws.com/mozilla-games/tmp/2017-02-21-SunTemple/SunTemple.html](http://s3.amazonaws.com/mozilla-games/tmp/2017-02-21-SunTemple/SunTemple.html)。这是运行于[Unreal engine](https://www.unrealengine.com/en-US/what-is-unreal-engine-4)（这是一个可以用来开发虚拟现实的开发套件）中的。
 
 另一个合理使用 WebAssembly （高性能）的情况即实现一些处理计算密集型的库。比如，一些图形操作。
 
@@ -140,12 +140,13 @@ WebAssembly 的最初版本主要是为了解决大量计算密集型的计算�
 
 针对操作 DOM 和频繁使用平台接口的情况 ，使用 JavaScript 会更加合理，因为它不会产生额外的性能开销且它原生支持各种接口。
 
-在 [SessionStack](https://www.sessionstack.com/?utm_source=medium&utm_medium=blog&utm_content=Post-6-webassembly-outro) 我们一直致力于持续提升 JavaScript 的性能以编写高质量和高效的代码。我们的解决方案必须拥有闪电般的性能因为我们不能够影响用户程序的性能。一旦把 SessionStack 整合进网络应用或网站的生产环境，它会开始记录所有的一切：所有的 DOM 变化，用户交互，JavaScript 异常，堆栈追踪，失败的网络请求和调试数据。所有的这一切都是在生产环境中产生且没有影响到产品的任何交互和性能。我们必须极大地优化我们的代码并且尽可能地让它异步执行。
+在 [SessionStack](https://www.sessionstack.com/?utm_source=medium&utm_medium=blog&utm_content=Post-6-webassembly-outro) 我们一直致力于持续提升 JavaScript 的性能以编写高质量和高效的代码。我们的解决方案必须拥有闪电般的性能因为我们不能够影响用户程序的性能。一旦把 SessionStack 整合进网络应用或网站的生产环境，它会开始记录所有的一切：所有的 DOM 变化，用户交互，JavaScript 异常，堆栈追踪，失败的网络请求和调试数据。所有的这一切都是在生产环境中产生且没有影响到产品的任何交互和性能。我们必须极大地优化我们的代码并且尽可能地让它异步执行。
 
-我们不仅仅有库，还有其它功能！当你在 SessionStack 中重放用户会话，我们必须渲染问题产生时用户的浏览器所发生的一切，而且我们必须重构整个状态，允许你在会话时间线上来回跳转。为了使之成为可能，我们大量地使用异步操作，因为  JavaScript 中没有比这更好的替代选择了。
+我们不仅仅有库，还有其它功能！当你在 SessionStack 中重放用户会话，我们必须渲染问题产生时用户的浏览器所发生的一切，而且我们必须重构整个状态，允许你在会话时间线上来回跳转。为了使之成为可能，我们大量地使用异步操作，因为 JavaScript 中没有比这更好的替代选择了。
 
 有了 WebAssembly，我们就可以把大量的数据计算和渲染的工作移交给更加合适的语言来进行处理而把数据收集和 DOM 操作交给 JavaScript 进行处理。
 
 ## 番外篇
 
 打开 [webassembly](https://webassembly.org/) 官网就可以在头部醒目地看到显示它兼容的浏览器。分别是火孤，Chrome，Safari，IE Edge。点开 learn more 可以查看到这是于 2017／2／28 达成一致推出浏览器预览版。现在各项工作开始进入实施阶段了，相信在未来的某个时刻就可以在生产环境使用它了。官网上面介绍了一个 JavaScript 的子集 [asm.js](http://asmjs.org/)。另外，这里有一个 WebAssembly 和 JavaScript 进行性能比对的[测试网站](https://takahirox.github.io/WebAssembly-benchmark/)。
+

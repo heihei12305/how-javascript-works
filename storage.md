@@ -15,7 +15,7 @@
 数据存储模型决定了其内部是如何组织存储数据的。这会影响到整个网页程序的设计，并计算出为获取高性能网页程序及解决其所遇到的问题所需要的代价。没有所谓更好的技术和一刀切的解决方案，因为所有的问题都是工程学相关的问题。那么，让我们来瞧瞧可供选择的数据模型吧：
 
 * 结构型：以预定义字段将数据存储于表中，因其为典型的基于 SQL 的数据库管理系统，所以可以很好地适应灵活和动态的数据查询。IndexedDB 即浏览器端结构型数据库的一个典型例子。
-* 键/值型：键/值数据存储及关系型 NoSQL 数据库，允许开发者通过唯一键索引来存储和获取非结构型数据(即非预定数据类型的字段的数据)。键/值数据存储就像哈希表存储，意及其允许在一定时间内访问索引的不定数据类型的数据。键/值数据型存储的很好的例子有浏览器端的 Cache API 和 服务器端 Apache Cassandra。
+* 键/值型：键/值数据存储及关系型 NoSQL 数据库，允许开发者通过唯一键索引来存储和获取非结构型数据\(即非预定数据类型的字段的数据\)。键/值数据存储就像哈希表存储，意及其允许在一定时间内访问索引的不定数据类型的数据。键/值数据型存储的很好的例子有浏览器端的 Cache API 和 服务器端 Apache Cassandra。
 * 字节流型：这一简单的模型把数据存储为定长，混淆字符串的字节变量，让应用层来控制其内部数据组织。该模型尤其适合于文件存储和其它层次型组织的 blob 数据。字节流存储的典型例子包括文件系统和云存储设备。
 
 ## 持久性
@@ -40,11 +40,9 @@
 
 这里，让我们浏览一下网页开发者当前可用的 API 并使用上述的几个维度来进行比较。
 
-<iframe src="https://airtable.com/embed/shrIBGJdUMiYCKvH9/tbl7Z3CqbW4dD7Dtn"></iframe>
-
 ## 文件系统 API
 
-![0_9kpehy4mub8f-hsp](https://user-images.githubusercontent.com/1475173/50570382-f0b9c100-0dc3-11e9-9f15-b38abc429c4e.png)
+![0\_9kpehy4mub8f-hsp](https://user-images.githubusercontent.com/1475173/50570382-f0b9c100-0dc3-11e9-9f15-b38abc429c4e.png)
 
 有了 FileSystem API，网页程序就可以在用户本地文件系统的沙箱中进行新建，读取，操作和写文件。
 
@@ -64,13 +62,13 @@
 
 网页程序可调用 `window.requestFileSystem()` 来访问沙箱文件系统。：
 
-```
+```text
 // 注意: 该文件系统以 Google Chrome 12 为前缀The file system has been prefixed as of Google Chrome 12:
 window.requestFileSystem = window.requestFileSystem || window.webkitRequestFileSystem;
 window.requestFileSystem(type, size, successCallback, opt_errorCallback)
 ```
 
-第一次调用 requestFileSystem() 方法的时候会新建一个本地存储。需要注意的是该文件系统是沙箱型的，意即网页程序不可以访问其它程序的文件。
+第一次调用 requestFileSystem\(\) 方法的时候会新建一个本地存储。需要注意的是该文件系统是沙箱型的，意即网页程序不可以访问其它程序的文件。
 
 在获得访问文件系统的权限后，开发者可以对文件和目录进行大部分常规文件系统操作。
 
@@ -86,11 +84,11 @@ window.requestFileSystem(type, size, successCallback, opt_errorCallback)
 
 以下为该 API 的当前浏览器支持情况：
 
-![0_ndu4n8xqf6qeqmsy](https://user-images.githubusercontent.com/1475173/50570378-ef889400-0dc3-11e9-9959-c08458c5631d.png)
+![0\_ndu4n8xqf6qeqmsy](https://user-images.githubusercontent.com/1475173/50570378-ef889400-0dc3-11e9-9959-c08458c5631d.png)
 
 ## Local storage
 
-![0_asohzlowolitnuel](https://user-images.githubusercontent.com/1475173/50570381-f0212a80-0dc3-11e9-9cd1-c917f908af1c.png)
+![0\_asohzlowolitnuel](https://user-images.githubusercontent.com/1475173/50570381-f0212a80-0dc3-11e9-9cd1-c917f908af1c.png)
 
 localStorage API 允许开发者访问 [文档](https://developer.mozilla.org/en-US/docs/Web/API/Document) 源的 [Storage](https://developer.mozilla.org/en-US/docs/Web/API/Storage) 对象。存储的数据在多个浏览器会话之间仍然有效。localStorage 和 [sessionStorage](https://developer.mozilla.org/en-US/docs/Web/API/Window.sessionStorage) 类似，只不过存储在 localStorage 中的数据没有过期时间，而存储在 sessionStorage 中的数据会在页面会话结束时丢失-意即当关闭页面时即丢失。
 
@@ -98,11 +96,11 @@ localStorage API 允许开发者访问 [文档](https://developer.mozilla.org/en
 
 以下为该 API 的当前浏览器支持情况：
 
-![0_hxc_nupnycubhj-l](https://user-images.githubusercontent.com/1475173/50570379-f0212a80-0dc3-11e9-9c7c-9316a216e5b0.png)
+![0\_hxc\_nupnycubhj-l](https://user-images.githubusercontent.com/1475173/50570379-f0212a80-0dc3-11e9-9c7c-9316a216e5b0.png)
 
 ## Session storage
 
-![0_-imsnws_l1g0syla](https://user-images.githubusercontent.com/1475173/50570384-f0b9c100-0dc3-11e9-94f5-12c6dfc69719.png)
+![0\_-imsnws\_l1g0syla](https://user-images.githubusercontent.com/1475173/50570384-f0b9c100-0dc3-11e9-94f5-12c6dfc69719.png)
 
 sessionStorage 属性允许开发者访问当前源的会话 [Storage](https://developer.mozilla.org/en-US/docs/Web/API/Storage) 对象。前面简述过，sessionStorage 和 [localStorage](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage) 类似。唯一的区别即，存储在 localStorage 中的数据没有过期时间而 sessionStorage 中的数据会在页面会话结束时丢失。页面会话的时效为浏览器打开时且在页面重载和恢复时。在新的选项卡中打开新页面或者窗口会导致重新初始化一个新的会话，这与会话 cookies 的工作机制是不一样的。
 
@@ -110,13 +108,13 @@ sessionStorage 属性允许开发者访问当前源的会话 [Storage](https://d
 
 以下为该 API 的当前浏览器支持情况：
 
-![0_hxc_nupnycubhj-l](https://user-images.githubusercontent.com/1475173/50570379-f0212a80-0dc3-11e9-9c7c-9316a216e5b0.png)
+![0\_hxc\_nupnycubhj-l](https://user-images.githubusercontent.com/1475173/50570379-f0212a80-0dc3-11e9-9c7c-9316a216e5b0.png)
 
 ## Cookies
 
-![0_vkqiniyfu2o7d7bh](https://user-images.githubusercontent.com/1475173/50570385-f1525780-0dc3-11e9-9021-a89939840dea.png)
+![0\_vkqiniyfu2o7d7bh](https://user-images.githubusercontent.com/1475173/50570385-f1525780-0dc3-11e9-9021-a89939840dea.png)
 
-所谓 cookie(网页 cookie，浏览器 cookie) 指的是由用户的服务器发送到客户端的一小段数据。浏览器将其存储下来然后在下一次请求的时候捎带上它发往服务器。典型地，它被用来告知两个请求是否来自于同一个客户端-比如保持用户登录状态。它为 [无状态](https://developer.mozilla.org/en-US/docs/Web/HTTP/Overview#HTTP_is_stateless_but_not_sessionless) HTTP 协议记录有状态信息。
+所谓 cookie\(网页 cookie，浏览器 cookie\) 指的是由用户的服务器发送到客户端的一小段数据。浏览器将其存储下来然后在下一次请求的时候捎带上它发往服务器。典型地，它被用来告知两个请求是否来自于同一个客户端-比如保持用户登录状态。它为 [无状态](https://developer.mozilla.org/en-US/docs/Web/HTTP/Overview#HTTP_is_stateless_but_not_sessionless) HTTP 协议记录有状态信息。
 
 Cookies 有以下三个主要用途：
 
@@ -124,12 +122,12 @@ Cookies 有以下三个主要用途：
 * 个性化-用户参数，皮肤和其它设置
 * 监控-记录和分析用户行为
 
-Cookies 曾经一统客户端存储方案。当它是客户端存储的唯一方案的时候，这是不二选择，现如今推荐选择使用现代存储 API 来存储客户端数据。每次发送请求都会捎带上 Cookies，所以会影响性能(特别是当在一个移动端请求数据的时候)。
+Cookies 曾经一统客户端存储方案。当它是客户端存储的唯一方案的时候，这是不二选择，现如今推荐选择使用现代存储 API 来存储客户端数据。每次发送请求都会捎带上 Cookies，所以会影响性能\(特别是当在一个移动端请求数据的时候\)。
 
 有两种类型的 cookies：
 
 * 会话 cookie-当用户关闭浏览器时失效。网页浏览器可以使用恢复会话技术来固化大多数会话 cookie，就好像未曾关闭浏览器一样。
-* 永久性 cookie-和客户端关闭即过期相反，永久性 cookie 会在指定的过期时间过期或者在一个指定的时间(Max-age)后过期。
+* 永久性 cookie-和客户端关闭即过期相反，永久性 cookie 会在指定的过期时间过期或者在一个指定的时间\(Max-age\)后过期。
 
 请注意不要在 cookie 中存储凭据或者敏感信息，因其固有的不安全缺陷机制。
 
@@ -137,11 +135,11 @@ Cookies 曾经一统客户端存储方案。当它是客户端存储的唯一方
 
 ## Cache
 
-![0_xz2u-ztabhwjosky](https://user-images.githubusercontent.com/1475173/50570386-f1525780-0dc3-11e9-9156-2440dedb14f3.png)
+![0\_xz2u-ztabhwjosky](https://user-images.githubusercontent.com/1475173/50570386-f1525780-0dc3-11e9-9156-2440dedb14f3.png)
 
 Cache 接口是缓存请求/响应对象的存储机制。请注意和 workers 一样可在窗口作用域内使用 Cache 接口。虽然 Cache 是在服务工作线程规范中定义的，但这并不表示一定要和服务工作线程一起使用。
 
-一个源可以拥有多个命名的缓存对象。开发者只需要在脚本(比如在[服务工作线程中](https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorker))中实现如何处理更新缓存即可。除非显示请求否则不会更新缓存中的对象，只能通过删除缓存对象，否则不会过期。使用 [CacheStorage.open()](https://developer.mozilla.org/en-US/docs/Web/API/CacheStorage/open) 来打开指定命名的缓存对象，然后调用任意的缓存方法来维护缓存。
+一个源可以拥有多个命名的缓存对象。开发者只需要在脚本\(比如在[服务工作线程中](https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorker)\)中实现如何处理更新缓存即可。除非显示请求否则不会更新缓存中的对象，只能通过删除缓存对象，否则不会过期。使用 [CacheStorage.open\(\)](https://developer.mozilla.org/en-US/docs/Web/API/CacheStorage/open) 来打开指定命名的缓存对象，然后调用任意的缓存方法来维护缓存。
 
 开发者需要定时清除缓存条目。每个源在浏览器端都有限额的缓存数据。使用 [StorageEstimate](https://developer.mozilla.org/en-US/docs/Web/API/StorageEstimate) 来估算使缓存配额使用率。浏览器尽力管理硬盘空间，但它有可能会删除指定源的缓存数据。浏览器可能会删除指定源的所有数据抑或不会。切记使用名称来对脚本进行版本控制且只操作可以安全操作的脚本版本。查看 [Deleting old caches](https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorker_API/Using_Service_Workers#Deleting_old_caches) 以获取更多信息。
 
@@ -149,22 +147,22 @@ Cache 接口是缓存请求/响应对象的存储机制。请注意和 workers �
 
 接口：
 
-* 提供一个可以为 [ServiceWorker](https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorker)，其它类型工作线程或者 [window](https://developer.mozilla.org/en-US/docs/Web/API/Window) 作用域可访问的所有命名的缓存的主目录(虽然是在 [服务工作线程](https://w3c.github.io/ServiceWorker/) 中定义的缓存，但是并不意味着只能将其和工作线程配合使用)
+* 提供一个可以为 [ServiceWorker](https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorker)，其它类型工作线程或者 [window](https://developer.mozilla.org/en-US/docs/Web/API/Window) 作用域可访问的所有命名的缓存的主目录\(虽然是在 [服务工作线程](https://w3c.github.io/ServiceWorker/) 中定义的缓存，但是并不意味着只能将其和工作线程配合使用\)
 * 维护一份字符名称和 [Cache](https://developer.mozilla.org/en-US/docs/Web/API/Cache) 对象的映射
 
-使用 [CacheStorage.open()](https://developer.mozilla.org/en-US/docs/Web/API/CacheStorage/open) 来创建 [Cache](https://developer.mozilla.org/en-US/docs/Web/API/Cache) 实例。
+使用 [CacheStorage.open\(\)](https://developer.mozilla.org/en-US/docs/Web/API/CacheStorage/open) 来创建 [Cache](https://developer.mozilla.org/en-US/docs/Web/API/Cache) 实例。
 
-使用 [CacheStorage.match()](https://developer.mozilla.org/en-US/docs/Web/API/CacheStorage/match) 来检查指定的 [Request](https://developer.mozilla.org/en-US/docs/Web/API/Request) 是否是 CacheStorage 对象中的 [Cache](https://developer.mozilla.org/en-US/docs/Web/API/Cache) 对象的键。
+使用 [CacheStorage.match\(\)](https://developer.mozilla.org/en-US/docs/Web/API/CacheStorage/match) 来检查指定的 [Request](https://developer.mozilla.org/en-US/docs/Web/API/Request) 是否是 CacheStorage 对象中的 [Cache](https://developer.mozilla.org/en-US/docs/Web/API/Cache) 对象的键。
 
 使用通过全局 [caches](https://developer.mozilla.org/en-US/docs/Web/API/WorkerGlobalScope/caches) 属性来访问 CacheStorage。
 
 ## IndexedDB
 
-![0_hp66xm7oe9u8ofk1](https://user-images.githubusercontent.com/1475173/50570387-f1525780-0dc3-11e9-810e-9769ffc85783.png)
+![0\_hp66xm7oe9u8ofk1](https://user-images.githubusercontent.com/1475173/50570387-f1525780-0dc3-11e9-810e-9769ffc85783.png)
 
 IndexedDB 是一种客户端持久性数据存储方案。因其允许开发者创建拥有富查询能力的网页程序而不用关心网络情况，这些网页程序可以线上或者离线运行。
 
-IndexedDB 适用于大量的数据存储(比如，商业图书馆DVD 目录)和不需要保持网络连通的网页程序(比如，邮件客户端，待办事项及便笺)。
+IndexedDB 适用于大量的数据存储\(比如，商业图书馆DVD 目录\)和不需要保持网络连通的网页程序\(比如，邮件客户端，待办事项及便笺\)。
 
 因大家都比较熟悉其它存储 API ，本文将对 IndexedDB 多唠会嗑。另外，如今随着网页程序越来越复杂 IndexedDB 也正变得越来越流行。
 
@@ -180,10 +178,10 @@ IndexedDB 曾经也有一个被称为 WebSQL 数据库的竞品规范，但是�
 
 * **IndexedDB 数据库存储键-值对**-值可以是复杂的结构型对象而键可以是这些对象的属性。开发者可以使用对象的任意属性来创建索引进行快速搜索，比如枚举排序。键也可以是二进制型对象。
 * **IndexedDB 是建立在事务型数据模型之上的**-IndexedDB 中的所有操作都发生于[事务](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API/Basic_Concepts_Behind_IndexedDB#gloss_transaction)上下文之中。因此，开发者不可以在事务之外执行命令或者打开游标。同样地，事务只能自动而不可以手动提交。
-* **大多数 IndexedDB 都是异步的 **-API 不会通过返回值地形式来返回数据。相反，需要传入回调函数来处理返回值。意即，开发者不是同步把值存储进数据库或者直接从数据库中取回值。相反，发起 request 请求即表示一次数据库操作。当数据处理结束会通知开发者，开发者所监听的事件类型会通知数据操作是否成功。这和 [XMLHttpRequest](https://developer.mozilla.org/en/DOM/XMLHttpRequest) (或者其它这么多 JavaScript 相关的东西) 的工作原理大同小异。
+* **大多数 IndexedDB 都是异步的** -API 不会通过返回值地形式来返回数据。相反，需要传入回调函数来处理返回值。意即，开发者不是同步把值存储进数据库或者直接从数据库中取回值。相反，发起 request 请求即表示一次数据库操作。当数据处理结束会通知开发者，开发者所监听的事件类型会通知数据操作是否成功。这和 [XMLHttpRequest](https://developer.mozilla.org/en/DOM/XMLHttpRequest) \(或者其它这么多 JavaScript 相关的东西\) 的工作原理大同小异。
 * **IndexedDB 使用大量的请求**-请求是对象用来接收之前提到的成功或者失败事件。它们包含 onsuccess 和 onerror 属性，和 readyState，result，errorCode 等用来告知请求状态的属性一样。
 * **IndexedDB 是面向对象的**-IndexedDB 并不是一个含有表示行列集合的表关系型数据库。这一巨大的差异影响开发者设计和构建网页程序。
-* **IndexedDB 不使用结构型查询语言(SQL)**-它在索引上使用查询后会创建一个游标，可以使用该游标来遍历结果集。若不熟悉 NoSQL 系统，可以阅读 [维基百科关于 NoSQL 的文章](https://en.wikipedia.org/wiki/NoSQL)。
+* **IndexedDB 不使用结构型查询语言\(SQL\)**-它在索引上使用查询后会创建一个游标，可以使用该游标来遍历结果集。若不熟悉 NoSQL 系统，可以阅读 [维基百科关于 NoSQL 的文章](https://en.wikipedia.org/wiki/NoSQL)。
 * **IndexedDB 也应用了同源策略**-一个源即包含域名，应用程序层协议及 URL 端口地址的文档，脚本即在源中执行。每个源都拥有其关联的数据库集。每个数据库在源中都有唯一的标识。
 
 ## **IndexedDB** 局限性
@@ -197,13 +195,13 @@ IndexedDB 被设计用来满足大多数的客户端存储情况的。然而，�
 另外，需要注意的是浏览器会在以下情况清除数据库：
 
 * **用户发起清除操作的请求**-许多浏览器都允许用户清除指定网站的数据，包括 cookie, 书签，存储的密码以及 IndexedDB 数据。
-* 浏览器在隐私模式下-一些浏览器含有『隐私浏览』(Firefox) 和 『无痕浏览』(Chrome)模式。会话结束会清除数据库。
+* 浏览器在隐私模式下-一些浏览器含有『隐私浏览』\(Firefox\) 和 『无痕浏览』\(Chrome\)模式。会话结束会清除数据库。
 * 超出了磁盘容量或者磁盘限额。
 * 数据损坏。。。
 
 虽然现实情况和浏览器能力日新月异，但是浏览器产商都朝着尽一切可能保存数据的方向努力。
 
-![0_kgdqye70_z58d7na](https://user-images.githubusercontent.com/1475173/50570765-b9064580-0dd2-11e9-9cf7-1d92173c9f01.png)
+![0\_kgdqye70\_z58d7na](https://user-images.githubusercontent.com/1475173/50570765-b9064580-0dd2-11e9-9cf7-1d92173c9f01.png)
 
 ## 选择合适的存储 API
 
@@ -214,6 +212,7 @@ IndexedDB 被设计用来满足大多数的客户端存储情况的。然而，�
 
 ## 参考
 
-* <https://developers.google.com/web/fundamentals/instant-and-offline/web-storage/>
-* <https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies>
-* <https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API/Basic_Concepts_Behind_IndexedDB>
+* [https://developers.google.com/web/fundamentals/instant-and-offline/web-storage/](https://developers.google.com/web/fundamentals/instant-and-offline/web-storage/)
+* [https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies](https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies)
+* [https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB\_API/Basic\_Concepts\_Behind\_IndexedDB](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API/Basic_Concepts_Behind_IndexedDB)
+

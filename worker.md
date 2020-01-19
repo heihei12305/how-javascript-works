@@ -16,19 +16,19 @@
 
 AJAX 请求是一个很好的异步编程的使用场景 。因为请求可能会花很长的时间，所以可以异步执行它们，然后在客户端等待数据返回的同时，运行其它代码。
 
-```
+```text
 // 假设使用 jQuery
 jQuery.ajax({
     url: 'https://api.example.com/endpoint',
     success: function(response) {
-    		// 当数据返回时候的代码
+            // 当数据返回时候的代码
     }
 });
 ```
 
 然而，这里会产生一个问题－AJAX 请求是由浏览器网页 API 进行处理的，可以异步执行其它代码吗？比如，假设成功回调的代码是 CPU 密集型的：
 
-```
+```text
 var result = performCPUIntensiveCalculation();
 ```
 
@@ -40,7 +40,7 @@ var result = performCPUIntensiveCalculation();
 
 让我们看一个计算数值数组的平均值的简单函数。
 
-```
+```text
 function average(numbers) {
     var len = numbers.length,
         sum = 0,
@@ -49,18 +49,18 @@ function average(numbers) {
     if (len === 0) {
         return 0;
     } 
-    
+
     for (i = 0; i < len; i++) {
         sum += numbers[i];
     }
-   
+
     return sum / len;
 }
 ```
 
 可以把以上代码重写为模拟异步：
 
-```
+```text
 function averageAsync(numbers, callback) {
     var len = numbers.length,
         sum = 0;
@@ -113,7 +113,7 @@ Web Workers 允许你做诸如运行处理 CPU 计算密集型任务的耗时脚
 
 你或许会有疑问－『难道 JavaScript 不是单线程的吗？』。
 
-当你意识到 JavaScript 是一门没有定义线程模型的语言的时候，或许你会感觉非常的惊讶。Web Workers 并不是 JavaScript 的一部分，他们是可以通过 JavaScript 进行操作的浏览器功能之一。以前，大多数的浏览器是单线程的（当然，现在已经变了），而且大多数的 JavaScript 功能是在浏览器端实现完成的。Node.js 没有实现 Web Workers －它有 『cluster』和 『child_process』的概念，这两者和 Web Workers 有些许差异。
+当你意识到 JavaScript 是一门没有定义线程模型的语言的时候，或许你会感觉非常的惊讶。Web Workers 并不是 JavaScript 的一部分，他们是可以通过 JavaScript 进行操作的浏览器功能之一。以前，大多数的浏览器是单线程的（当然，现在已经变了），而且大多数的 JavaScript 功能是在浏览器端实现完成的。Node.js 没有实现 Web Workers －它有 『cluster』和 『child\_process』的概念，这两者和 Web Workers 有些许差异。
 
 值得注意的是，规范中有三种类型的 Web Workers：
 
@@ -127,7 +127,7 @@ Dedicated Web Workers 是由主进程实例化并且只能与之进行通信
 
 ![](https://user-images.githubusercontent.com/1475173/40270200-7324ac2e-5bbb-11e8-80d6-654e0e0b5dfb.png)
 
-<center>Dedicated Workers 浏览器支持情况</center>
+Dedicated Workers 浏览器支持情况
 
 ## Shared Workers
 
@@ -135,7 +135,7 @@ Shared workers 可以被运行在同源的所有进程访问（不同的浏览�
 
 ![](https://user-images.githubusercontent.com/1475173/40270199-72b94baa-5bbb-11e8-9755-541047f8e93a.png)
 
-<center>Shared Workers 浏览器支持情况</center>
+Shared Workers 浏览器支持情况
 
 ## Service Workers
 
@@ -143,7 +143,7 @@ Service Worker 是一个由事件驱动的 worker，它由源和路径组成。�
 
 ![](https://user-images.githubusercontent.com/1475173/40270197-7267d41e-5bbb-11e8-9bd3-978cab346084.png)
 
-<center>Service Workers 浏览器支持情况</center>
+Service Workers 浏览器支持情况
 
 本篇文章，我们将会专注于 Dedicated Workers 并以 『Web Workers』或者 『Workers』来称呼它。
 
@@ -157,7 +157,7 @@ Web Workers 运行于浏览器的一个隔离线程之中。因此，他们所�
 
 让我们看如何创建初始化 worker 吧：
 
-```
+```text
 var worker = new Worker('task.js');
 ```
 
@@ -165,7 +165,7 @@ var worker = new Worker('task.js');
 
 为了启动创建的 worker，你需要调用 `postMessage` 方法：
 
-```
+```text
 worker.postMessage();
 ```
 
@@ -181,7 +181,7 @@ worker.postMessage();
 
 让我们看下以下的 HTML 页面（或者更准确地说是 HTML 页面的一部分）
 
-```
+```text
 <button onclick="startComputation()">Start computation</button>
 
 <script>
@@ -192,13 +192,13 @@ worker.postMessage();
   worker.addEventListener('message', function(e) {
     console.log(e.data);
   }, false);
-  
+
 </script>
 ```
 
 worker 的脚本如下：
 
-```
+```text
 self.addEventListener('message', function(e) {
   var data = e.data;
   switch (data.cmd) {
@@ -212,7 +212,7 @@ self.addEventListener('message', function(e) {
 }, false);
 ```
 
-当点击按钮，会在主页面调用 `postMessage`  方法。
+当点击按钮，会在主页面调用 `postMessage` 方法。
 
 `worker.postMessage` 行代码会把包含 `cmd` 和 `data` 属性及其各自属性值的 `JSON` 对象传入 worker。worker 通过定义监听 `message` 事件来处理传过来的消息。
 
@@ -226,7 +226,7 @@ self.addEventListener('message', function(e) {
 
 [Broadcast Channel](https://developer.mozilla.org/en-US/docs/Web/API/BroadcastChannel) 是更为普遍的通信接口。它允许我们向共享同一个源的所有上下文发送消息。同一个源下的所有的浏览器选项卡，内联框架或者 workers 都可以发送和接收消息：
 
-```
+```text
 // 连接到一个广播信道
 var bc = new BroadcastChannel('test_channel');
 
@@ -243,13 +243,11 @@ bc.onmessage = function (e) {
 bc.close()
 ```
 
-
-
 视觉上看，你可以通过广播信道的图例以更加深刻的理解它。
 
 ![](https://user-images.githubusercontent.com/1475173/40270201-736e77d2-5bbb-11e8-9aa8-c8706a15f0e6.png)
 
-<center>所有的浏览器上下文都是同源的</center>
+所有的浏览器上下文都是同源的
 
 然而，广播信道浏览器兼容性不太好：
 
@@ -260,7 +258,7 @@ bc.close()
 有两种向 Web Workers 发送消息的方法：
 
 * 复制消息：消息被序列化，复制，然后发送出去，接着在接收端反序列化。页面和 worker 没有共享一个相同的消息实例，所以在每次传递消息过程中最后的结果都是复制的。大多数浏览器是通过在任何一端自动进行 JSON 编码/解码消息值来实现这一功能。正如所预料的那样，这些对于数据的操作显著增加了消息传送的性能开销。消息越大，传送的时间越长。
-* 消息传输：这意味着最初的消息发送者一发送即不再使用（<!--和导弹的发射后不管一样-->）。数据传输非常的快。唯一的限制即只能传输 [ArrayBuffer](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer) 数据对象。
+* 消息传输：这意味着最初的消息发送者一发送即不再使用（）。数据传输非常的快。唯一的限制即只能传输 [ArrayBuffer](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer) 数据对象。
 
 ## Web Workers 的可用功能
 
@@ -276,7 +274,7 @@ bc.close()
 
 ## Web Worker 的局限性
 
-令人沮丧的是，Web Workers 不能够访问一些非常关键的 JavaScript  功能：
+令人沮丧的是，Web Workers 不能够访问一些非常关键的 JavaScript 功能：
 
 * DOM（非线程安全的）
 * `window` 对象
@@ -295,7 +293,7 @@ bc.close()
 
 示例：
 
-```
+```text
 function onError(e) {
   console.log('Line: ' + e.lineno);
   console.log('In: ' + e.filename);
@@ -307,7 +305,7 @@ worker.addEventListener('error', onError, false);
 worker.postMessage(); // 启动 worker 而不带任何消息
 ```
 
-```
+```text
 self.addEventListener('message', function(e) {
   postMessage(x * 2); // 意图错误. 'x' 未定义
 };
@@ -321,15 +319,12 @@ self.addEventListener('message', function(e) {
 
 迄今为止，我们列举了 Web Workers 的长处及其限制。让我们看看他们的最佳使用场景：
 
-* **射线追踪**：射线追踪是一项通过追踪[光线](https://en.wikipedia.org/wiki/Light)的路径作为像素来生成图片的渲染技术。Ray tracing 使用 CPU 密集型计算来模仿光线的路径。思路即模仿一些诸如反射，折射，材料等的效果。所有的这些计算逻辑可以放在 Web Worker 中以避免阻塞 UI 线程。甚至更好的方法即－你可以轻易地把把图片的渲染拆分在几个 workers 中进行（即在各自的 CPU 中进行计算，意思是说利用多个 CPU 来进行计算，可以参考下 nodejs 的 api）。这里有一个使用 Web Workers 来进行射线追踪的简单示例－<https://nerget.com/rayjs-mt/rayjs.html>。
-
+* **射线追踪**：射线追踪是一项通过追踪[光线](https://en.wikipedia.org/wiki/Light)的路径作为像素来生成图片的渲染技术。Ray tracing 使用 CPU 密集型计算来模仿光线的路径。思路即模仿一些诸如反射，折射，材料等的效果。所有的这些计算逻辑可以放在 Web Worker 中以避免阻塞 UI 线程。甚至更好的方法即－你可以轻易地把把图片的渲染拆分在几个 workers 中进行（即在各自的 CPU 中进行计算，意思是说利用多个 CPU 来进行计算，可以参考下 nodejs 的 api）。这里有一个使用 Web Workers 来进行射线追踪的简单示例－[https://nerget.com/rayjs-mt/rayjs.html](https://nerget.com/rayjs-mt/rayjs.html)。
 * 加密：端到端的加密由于对保护个人和敏感数据日益严格的法律规定而变得越来越流行。加密有时候会非常地耗时，特别是如果当你需要经常加密很多数据的时候（比如，发往服务器前加密数据）。这是一个使用 Web Worker 的绝佳场景，因为它并不需要访问 DOM 或者利用其它魔法－它只是纯粹使用算法进行计算而已。一旦在 worker 进行计算，它对于用户来说是无缝地且不会影响到用户体验。
-
 * 预取数据：为了优化网站或者网络应用及提升数据加载时间，你可以使用 Workers 来提前加载部分数据以备不时之需。不像其它技术，Web Workers 在这种情况下是最棒哒，因为它不会影响程序的使用体验。
-
 * 渐进式网络应用：即使在网络不稳定的情况下，它们必须快速加载。这意味着数据必须本地存储于浏览器中。这时候 [IndexDB](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API) 及其它类似的 API 就派上用场了。大体上说，一个客户端存储是必须的。为了不阻塞 UI 线程的渲染，这项工作必须由 Web Workers 来执行。呃，当使用 IndexDB的时候，可以不使用 workers 而使用其异步接口，但是之前它也含有同步接口（可能会再次引入 ），这时候就必须在 workers 中使用 IndexDB。
 
-  **这里需要注意的是在现代浏览器已经不支持同步接口了，具体可查看[这里](https://developer.mozilla.org/zh-CN/docs/Web/API/IndexedDB_API)。**
+  **这里需要注意的是在现代浏览器已经不支持同步接口了，具体可查看**[**这里**](https://developer.mozilla.org/zh-CN/docs/Web/API/IndexedDB_API)**。**
 
 * 拼写检查：一个基本的拼写检测器是这样工作的－程序会读取一个包含拼写正确的单词列表的字典文件。字典会被解析成一个搜索树以加快实际的文本搜索。当检查器检查一个单词的时候，程序会在预构建搜索树中进行检索。如果在树中没有检索到，则会通过提供替代的字符为用户提供替代的拼写并检测单词是否是有效－是否是用户需要的单词。这个检索过程中的所有工作都可以交由 Web Worker 来完成，这样用户就只需输入单词和语句而不会阻塞 UI，与此同时 worker 会处理所有的搜索和服务建议。
 
@@ -345,7 +340,7 @@ self.addEventListener('message', function(e) {
 
 所以解决思路即把这里的处理图片的操作交由 worker 来处理。以下贴出主要的代码：
 
-```
+```text
 <!DOCTYPE html>
 <html lang="zh-cn">
 <head>
@@ -369,7 +364,7 @@ self.addEventListener('message', function(e) {
           const width = this.width;
           const height = this.height;
           let imageData;
-          
+
           $canvas.width = width;
           $canvas.height = height;
           ctx.drawImage(image, 0, 0, width, height);
@@ -384,7 +379,7 @@ self.addEventListener('message', function(e) {
         image.src = url;
       });
     }
-    
+
     function blobToDataURL(blob) {
       return new Promise((fulfill, reject) => {
         let reader = new FileReader();
@@ -422,3 +417,4 @@ self.addEventListener('message', function(e) {
 ```
 
 以上是通过 canvas 来获取图片数据，那么是否有其它方法呢？肯定有的啦，动下脑筋吧少年。
+

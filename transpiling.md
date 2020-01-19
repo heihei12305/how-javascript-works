@@ -4,19 +4,19 @@
 
 **这是 JavaScript 工作原理的第十五章。**
 
-如今使用类来组织各种软件工程代码是最常用的方法。本章将会探索实现 JavaScript 类的不同方法及如何构建类继承。我们将深入理解原型继承及分析使用流行的类库模拟实现基于类继承的方法。接下来，将会介绍如何使用转换器为语言添加非原生支持的语法功能和如何在 Babel 和 TypeScript 中运用以支持  ECMAScript 2015 类。最后介绍几个 V8 原生支持实现类的例子。
+如今使用类来组织各种软件工程代码是最常用的方法。本章将会探索实现 JavaScript 类的不同方法及如何构建类继承。我们将深入理解原型继承及分析使用流行的类库模拟实现基于类继承的方法。接下来，将会介绍如何使用转换器为语言添加非原生支持的语法功能和如何在 Babel 和 TypeScript 中运用以支持 ECMAScript 2015 类。最后介绍几个 V8 原生支持实现类的例子。
 
 ## 概述
 
 JavaScript 没有原始类型且一切皆对象。比如，如下字符串：
 
-```
+```text
 const name = "SessionStack";
 ```
 
 可以立即调用新创建对象上的不同方法：
 
-```
+```text
 console.log(a.repeat(2)); // 输出 SessionStackSessionStack
 console.log(a.toLowerCase()); // 输出 sessionstack
 ```
@@ -25,7 +25,7 @@ JavaScript 和其它语言不一样，声明一个字符串或者数值会自动
 
 另外一个有趣的事实即诸如数组的复杂数据类型也是对象。当使用 typeof 来检查一个数组实例的时候会输出 `object`。数组中每个元素的索引值即对象的属性。所以通过数组索引来访问元素的时候，实际上是在访问一个数组对象的属性然后获得属性值。当涉及到数据存储方式的时候，以下两种定义是相同的：
 
-```
+```text
 let names = [“SessionStack”];
 
 let names = {
@@ -46,7 +46,7 @@ let names = {
 
 让我们以定义基础类的构造函数为例：
 
-```
+```text
 function Component(content) {
   this.content = content;
 }
@@ -62,15 +62,15 @@ Component.prototype.render = function() {
 
 现在，尝试扩展 component 类，引入新的子类。
 
-```
+```text
 function InputField(value) {
     this.content = `<input type="text" value="${value}" />`;
 }
 ```
 
-如果想要 InputField 扩展 component 类的方法且可以调用其 render 方法，就需要更改其原型。当调用子类的实例方法的时候，肯定不希望在一个空原型上进行查找(*这里其实所有对象都一个共同的原型，这里原文不够严谨*)。该查找会延续到 Component 类上。
+如果想要 InputField 扩展 component 类的方法且可以调用其 render 方法，就需要更改其原型。当调用子类的实例方法的时候，肯定不希望在一个空原型上进行查找\(_这里其实所有对象都一个共同的原型，这里原文不够严谨_\)。该查找会延续到 Component 类上。
 
-```
+```text
 InputField.prototype = Object.create(new Component());
 ```
 
@@ -94,14 +94,14 @@ InputField.prototype = Object.create(new Component());
 
 Babel 是最为流行的转换器之一。让我们通过 babel 转换 component 类来了解代码转换原理。
 
-```
+```text
 class Component {
   constructor(content) {
     this.content = content;
   }
 
   render() {
-  	console.log(this.content)
+      console.log(this.content)
   }
 }
 
@@ -111,7 +111,7 @@ component.render();
 
 以下为 Babel 是如何转换类定义的：
 
-```
+```text
 var Component = function () {
   function Component(content) {
     _classCallCheck(this, Component);
@@ -130,11 +130,11 @@ var Component = function () {
 }();
 ```
 
-如你所见，代码被转换为可在任意环境中运行的 ECMAScript 5 代码。另外，引入了额外的函数。它们是 Babel 标准库的一部分。编译后的文件中引入了 `_classCallCheck` 和 `_createClass` 函数。第一个函数保证构造函数永远不会被当成普通函数调用。这是通过检查函数执行上下文是否为一个 Component 对象实例来实现的。代码检查 this 是否指向这样的实例。第二个函数 `_createClass`  通过传入包含键和值的对象数组来创建对象(类)的属性。
+如你所见，代码被转换为可在任意环境中运行的 ECMAScript 5 代码。另外，引入了额外的函数。它们是 Babel 标准库的一部分。编译后的文件中引入了 `_classCallCheck` 和 `_createClass` 函数。第一个函数保证构造函数永远不会被当成普通函数调用。这是通过检查函数执行上下文是否为一个 Component 对象实例来实现的。代码检查 this 是否指向这样的实例。第二个函数 `_createClass` 通过传入包含键和值的对象数组来创建对象\(类\)的属性。
 
 为了理解继承的工作原理，让我们分析一下继承自 Component 类的 InputField 子类。
 
-```
+```text
 class InputField extends Component {
     constructor(value) {
         const content = `<input type="text" value="${value}" />`;
@@ -145,8 +145,7 @@ class InputField extends Component {
 
 这里是使用 Babel 来处理以上示例的输出：
 
-```
-
+```text
 var InputField = function (_Component) {
   _inherits(InputField, _Component);
 
@@ -161,17 +160,17 @@ var InputField = function (_Component) {
 }(Component);
 ```
 
-本例中，在 _inherits 函数中封装了继承逻辑。它执行了前面所说的一样的操作即设置子类的原型为父类的实例。
+本例中，在 \_inherits 函数中封装了继承逻辑。它执行了前面所说的一样的操作即设置子类的原型为父类的实例。
 
 为了转换代码，Babel 执行了几次转换。首先，解析 ES6 代码并转化成被称为语法抽象树的中间展示层，语法抽象树在之前的[文章](https://github.com/Troland/how-javascript-works/blob/master/ast.md)有讲过了。该树会被转换为一个不同的语法抽象树，该树上每个节点会转换为对应的 ECMAScript 5 节点。最后，把语法抽象树转换为 ES5 代码。
 
 ## Babel 中的语法抽象树
 
-AST 由节点组成，每个节点只有一个父节点。Babel 中有一种基础类型节点。该节点包含节点的内容及在代码中的位置的信息。有各种不同类型的节点比如字面量表示字符串，数值，空值等等。也有控制流(if) 和 循环(for, while)的语句节点。另外，还有一种特殊类型的类节点。它是基础节点类的子类，通过添加字段变量来存储基础类的引用和把类的正文作为单独的节点来拓展自身。
+AST 由节点组成，每个节点只有一个父节点。Babel 中有一种基础类型节点。该节点包含节点的内容及在代码中的位置的信息。有各种不同类型的节点比如字面量表示字符串，数值，空值等等。也有控制流\(if\) 和 循环\(for, while\)的语句节点。另外，还有一种特殊类型的类节点。它是基础节点类的子类，通过添加字段变量来存储基础类的引用和把类的正文作为单独的节点来拓展自身。
 
 转化以下代码片段为语法抽象树：
 
-```
+```text
 class Component {
   constructor(content) {
     this.content = content;
@@ -195,7 +194,7 @@ class Component {
 
 TypeScript 是另一个流行的框架。它引入了一种编写 JavaScript 程序的新语法，然后转换为任意浏览器或引擎可以运行的 EMCAScript 5 代码。以下为使用 Typescript 实现 component 类的代码：
 
-```
+```text
 class Component {
     content: string;
     constructor(content: string) {
@@ -213,7 +212,7 @@ class Component {
 
 同样支持继承。
 
-```
+```text
 class InputField extends Component {
     constructor(value: string) {
         const content = `<input type="text" value="${value}" />`;
@@ -224,7 +223,7 @@ class InputField extends Component {
 
 代码转换结果如下：
 
-```
+```text
 var InputField = /** @class */ (function (_super) {
     __extends(InputField, _super);
     function InputField(value) {
@@ -258,3 +257,4 @@ var InputField = /** @class */ (function (_super) {
 该节点包含了一些信息。首先，它把构造函数当成单独的函数且包含类属性集。这些属性可以是一个方法，一个 getter, 一个 setter, 一个公共变量或者私有变量。该节点还储存了指向父类的指针引用，该父类也并储存了构造函数，属性集和及父类引用，依次类推。
 
 一旦把新的 ClassLiteral [转换为字节码](https://github.com/v8/v8/blob/be3a1df9008ee78d1101855d3044db54a203f515/src/interpreter/bytecode-generator.cc#L1818)，再将其转化为各种函数和原型。
+

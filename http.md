@@ -2,7 +2,7 @@
 
 > 原文请查阅[这里](https://blog.sessionstack.com/how-javascript-works-deep-dive-into-websockets-and-http-2-with-sse-how-to-pick-the-right-path-584e6b8e3bf7)，略有改动，本文采用[知识共享署名 4.0 国际许可协议](http://creativecommons.org/licenses/by/4.0/)共享，BY [Troland](https://github.com/Troland)。
 
-**这是  JavaScript 工作原理的第五章。**
+**这是 JavaScript 工作原理的第五章。**
 
 现在，我们将会深入通信协议的世界，绘制并讨论它们的特点和内部构造。我们将会给出一份 WebSockets 和 HTTP/2 的快速比较 。在文末，我们将会分享如何正确地选择网络协议的一些见解。
 
@@ -22,7 +22,7 @@
 
 让我们看一下简单的长轮询代码片段：
 
-```
+```text
 (function poll(){
    setTimeout(function(){
       $.ajax({ 
@@ -56,18 +56,18 @@
 
 让我们看下如何在客户端创建 WebSocket 连接：
 
-```
+```text
 // 创建新的加密 WebSocket 连接
 var socket = new WebSocket('ws://websocket.example.com');
 ```
 
->WebSocket 地址使用了 `ws` 方案。`wss` 是一个等同于 `HTTPS` 的安全的 WebSocket 连接。
+> WebSocket 地址使用了 `ws` 方案。`wss` 是一个等同于 `HTTPS` 的安全的 WebSocket 连接。
 
-该方案是打开到 websocket.example.com  的 WebSocket 连接的开始。
+该方案是打开到 websocket.example.com 的 WebSocket 连接的开始。
 
 下面是初始化请求头的简化例子。
 
-```
+```text
 GET ws://websocket.example.com/ HTTP/1.1
 Origin: http://example.com
 Connection: Upgrade
@@ -79,7 +79,7 @@ Upgrade: websocket
 
 让我们看下 Node.js 的实现：
 
-```
+```text
 // 我们将会使用 https://github.com/theturtle32/WebSocket-Node 来实现 WebSocket
 var WebSocketServer = require('websocket').server;
 var http = require('http');
@@ -111,7 +111,7 @@ wsServer.on('request', function(request) {
 
 连接建立之后，服务器使用升级来作为回复：
 
-```
+```text
 HTTP/1.1 101 Switching Protocols
 Date: Wed, 25 Oct 2017 10:07:34 GMT
 Connection: Upgrade
@@ -120,7 +120,7 @@ Upgrade: WebSocket
 
 一旦连接建立，会触发客户端 WebSocket 实例的 `open` 事件。
 
-```
+```text
 var socket = new WebSocket('ws://websocket.example.com');
 
 // WebSocket 连接打开的时候，打印出 WebSocket 已连接的信息
@@ -131,7 +131,7 @@ socket.onopen = function(event) {
 
 现在，握手结束了，最初的 HTTP 连接被替换为 WebSocket 连接，该连接底层使用同样的 TCP/IP 连接。现在两边都可以开始发送数据了。
 
-通过 WebSocket，你可以随意发送数据而不用担心传统 HTTP 请求所带来的相关开销。数据是以消息的形式通过 WebSocket 进行传输的，每条信息是由包含你所传输的数据(有效载荷)的一个或多个帧所组成的。为了保证当消息到达客户端的时候被正确地重新组装出来，每一帧都会前置关于有效载荷的 4-12 字节的数据。使用这种基于帧的信息系统可以帮助减少非有效载荷数据的传输，从而显著地减少信息延迟。
+通过 WebSocket，你可以随意发送数据而不用担心传统 HTTP 请求所带来的相关开销。数据是以消息的形式通过 WebSocket 进行传输的，每条信息是由包含你所传输的数据\(有效载荷\)的一个或多个帧所组成的。为了保证当消息到达客户端的时候被正确地重新组装出来，每一帧都会前置关于有效载荷的 4-12 字节的数据。使用这种基于帧的信息系统可以帮助减少非有效载荷数据的传输，从而显著地减少信息延迟。
 
 **注意：**这里需要注意的是只有当所有的消息帧都被接收到而且原始的信息有效载荷被重新组装的时候，客户端才会接收到新消息的通知。
 
@@ -139,7 +139,7 @@ socket.onopen = function(event) {
 
 前面我们简要地谈到 WebSockets 引进了一个新的地址协议。实际上，WebSocket 引进了两种新协议：`ws://` 和 `wss://`。
 
-URL 地址含有指定方案的语法。WebSocket 地址特别之处在于，它不支持锚(`sample_anchor`)。
+URL 地址含有指定方案的语法。WebSocket 地址特别之处在于，它不支持锚\(`sample_anchor`\)。
 
 WebSocket 和 HTTP 风格的地址使用相同的地址规则。`ws` 是未加密且默认是 80 端口，而 `wss` 要求 TSL 加密且默认 443 端口。
 
@@ -147,7 +147,7 @@ WebSocket 和 HTTP 风格的地址使用相同的地址规则。`ws` 是未加�
 
 让我们深入了解下帧协议。这是 [RFC](https://tools.ietf.org/html/rfc6455#page-27) 提供的：
 
-```
+```text
 0                   1                   2                   3
       0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
      +-+-+-+-+-------+-+-------------+-------------------------------+
@@ -170,11 +170,9 @@ WebSocket 和 HTTP 风格的地址使用相同的地址规则。`ws` 是未加�
 
 由于 WebSocket 版本是由 RFC 所规定的，所以每个包前面只有一个头部信息。然而，这个头部信息相当的复杂。这是其组成模块的说明：
 
-* `fin`(1 位)：指示是否是组成信息的最后一帧。大多数时候，信息只有一帧所以该位通常有值。测试表明火狐的第二帧数据在 32K 之后。
-
-* `rsv1`，`rsv2`，`rsv3`(每个一位)：必须是 0 除非使用协商扩展来定义非 0 值的含义。如果收到一个非 0 值且没有协商扩展来定义非零值的含义，接收端会中断连接。
-
-* `opcode`(4 位)：表示第几帧。目前可用的值：
+* `fin`\(1 位\)：指示是否是组成信息的最后一帧。大多数时候，信息只有一帧所以该位通常有值。测试表明火狐的第二帧数据在 32K 之后。
+* `rsv1`，`rsv2`，`rsv3`\(每个一位\)：必须是 0 除非使用协商扩展来定义非 0 值的含义。如果收到一个非 0 值且没有协商扩展来定义非零值的含义，接收端会中断连接。
+* `opcode`\(4 位\)：表示第几帧。目前可用的值：
 
   `0x00`：该帧接续前面一帧的有效载荷。
 
@@ -188,16 +186,14 @@ WebSocket 和 HTTP 风格的地址使用相同的地址规则。`ws` 是未加�
 
   `0x0a`：该帧是一个pong。
 
-  (正如你所看到的，有相当一部分值未被使用；它们是保留以备未来使用的)。
+  \(正如你所看到的，有相当一部分值未被使用；它们是保留以备未来使用的\)。
 
-* `mask`(1 位)：指示该连接是否被遮罩。正其所表示的意义，每一条从客户端发往服务器的信息都必须被遮罩，然后如果信息未遮罩，根据规范会中断该连接。
-
-* `payload_len`(7 位)：有效载荷的长度。WebSocket 帧有以下几类长度：
+* `mask`\(1 位\)：指示该连接是否被遮罩。正其所表示的意义，每一条从客户端发往服务器的信息都必须被遮罩，然后如果信息未遮罩，根据规范会中断该连接。
+* `payload_len`\(7 位\)：有效载荷的长度。WebSocket 帧有以下几类长度：
 
   0-125 表示有效载荷的长度。126 意味着接下来两个字节表示有效载荷长度，127 意味着接下来的 8 个字节表示有效载荷长度。所以有效载荷的长度大概有 7 位，16 位和 64 位这三类。
 
-* `masking-key` (32 位)：所有从客户端发往服务器的帧都由帧内的一个 32 位值所遮罩。
-
+* `masking-key` \(32 位\)：所有从客户端发往服务器的帧都由帧内的一个 32 位值所遮罩。
 * `payload`：一般情况下都会被遮罩的实际数据。其长度取决于 `payload_len` 的长度。
 
 为什么 WebSocket 是基于帧而不是基于流的呢？我和你一样一脸懵逼，我也想多学点，如果你有任何想法，欢迎在下面的评论区添加评论和资源。另外，[HackerNews](https://news.ycombinator.com/item?id=3377406) 上面有关于这方面的讨论。
@@ -208,7 +204,7 @@ WebSocket 和 HTTP 风格的地址使用相同的地址规则。`ws` 是未加�
 
 通过 WebSocket 来传输数据的 API 是非常简单的：
 
-```
+```text
 var socket = new WebSocket('ws://websocket.example.com');
 socket.onopen = function(event) {
   socket.send('Some message'); // 向服务器发送数据
@@ -217,7 +213,7 @@ socket.onopen = function(event) {
 
 当 WebSocket 正在接收数据的时候（客户端），会触发 `message` 事件。该事件会带有一个 `data` 属性，里面包含了消息的内容。
 
-```
+```text
 // 处理服务器返回的消息
 socket.onmessage = function(event) {
   var message = event.data;
@@ -225,13 +221,13 @@ socket.onmessage = function(event) {
 };
 ```
 
-你可以很容易地利用 Chrome 开发者工具的网络选项卡来检查 WebSocket 连接中的每一帧的数据。
+你可以很容易地利用 Chrome 开发者工具的网络选项卡来检查 WebSocket 连接中的每一帧的数据。
 
 ![](https://user-images.githubusercontent.com/1475173/39884275-e9287a6a-54bb-11e8-9386-b8ec0c4dc58c.png)
 
 ## 数据分片
 
-有效载荷数据可以被分成多个独立的帧。接收端会缓冲这些帧直到 `fin` 位有值。所以你可以把字符串『Hello World』拆分为 11 个包，每个包由 6(头长度) + 1 字节组成。数据分片不能用来控制包。然而，规范想要你有能力去处理[交错](https://en.wikipedia.org/wiki/Interleaving_%28data%29)控制帧。这是为了预防 TCP 包无序到达客户端。
+有效载荷数据可以被分成多个独立的帧。接收端会缓冲这些帧直到 `fin` 位有值。所以你可以把字符串『Hello World』拆分为 11 个包，每个包由 6\(头长度\) + 1 字节组成。数据分片不能用来控制包。然而，规范想要你有能力去处理[交错](https://en.wikipedia.org/wiki/Interleaving_%28data%29)控制帧。这是为了预防 TCP 包无序到达客户端。
 
 连接帧的大概逻辑如下：
 
@@ -246,7 +242,7 @@ socket.onmessage = function(event) {
 
 握手之后的任意时刻，客户端和服务器可以随意地 ping 对方。当接收到 ping 的时候，接收方必须尽快回复一个 pong。此即心跳包。你可以用它来确保客户端是否保持连接。
 
-ping 或者 pong 虽然只是一个普通帧，但却是一个控制帧。Ping 包含 `0x9` 操作码，而 Pong 包含 `0xA` 操作码。当你接收到 ping 的时候，返回一个和 ping 携带同样有效载荷数据的 pong(ping 和 pong 最大有效载荷长度都为 125)。你可能接收到一个 pong 而不用发送一个 ping。忽略它如果有发生这样的情况。
+ping 或者 pong 虽然只是一个普通帧，但却是一个控制帧。Ping 包含 `0x9` 操作码，而 Pong 包含 `0xA` 操作码。当你接收到 ping 的时候，返回一个和 ping 携带同样有效载荷数据的 pong\(ping 和 pong 最大有效载荷长度都为 125\)。你可能接收到一个 pong 而不用发送一个 ping。忽略它如果有发生这样的情况。
 
 心跳包非常有用。利用服务（比如负载均衡器）来中断空闲的连接。另外，接收端不可能知道服务端是否已经中断连接。只有在发送下一帧的时候，你才会意识到发生了错误。
 
@@ -256,7 +252,7 @@ ping 或者 pong 虽然只是一个普通帧，但却是一个控制帧。Ping �
 
 像这样：
 
-```
+```text
 var socket = new WebSocket('ws://websocket.example.com');
 
 // 处理错误
@@ -271,7 +267,7 @@ socket.onerror = function(error) {
 
 这是初始化关闭客户端的 WebSocket 连接的代码：
 
-```
+```text
 // 如果连接打开着则关闭
 if (socket.readyState === WebSocket.OPEN) {
     socket.close();
@@ -280,7 +276,7 @@ if (socket.readyState === WebSocket.OPEN) {
 
 同样地，为了在完成关闭连接后运行任意的清理工作，你可以为 `close` 事件添加事件监听函数：
 
-```
+```text
 // 运行必要的清理工作
 socket.onclose = function(event) {
   console.log('Disconnected from WebSocket.');
@@ -289,7 +285,7 @@ socket.onclose = function(event) {
 
 服务器不得不监听 `close` 事件以便在需要的时候处理：
 
-```
+```text
 connection.on('close', function(reasonCode, description) {
     // 关闭连接
 });
@@ -311,7 +307,7 @@ connection.on('close', function(reasonCode, description) {
 
 由于 SSE 是基于 HTTP 的，所以它天然兼容于 HTTP/2 并且可以混合使用以利用各自的优势： HTTP/2 处理一个基于多路复用流的高效传输层而 SSE 为程序提供了 API 用来支持服务端推送。
 
-为了完全理解流和多路复用技术，先让我们来了解一下 IETF 的定义：『流』即是在一个 HTTP/2 连接中，在客户端和服务端间进行交换传输的一个独立的双向帧序列。它的主要特点之一即单个的 *HTTP/2* 连接可以包含多个并发打开的流，在每一终端交错传输来自多个流的帧。
+为了完全理解流和多路复用技术，先让我们来了解一下 IETF 的定义：『流』即是在一个 HTTP/2 连接中，在客户端和服务端间进行交换传输的一个独立的双向帧序列。它的主要特点之一即单个的 _HTTP/2_ 连接可以包含多个并发打开的流，在每一终端交错传输来自多个流的帧。
 
 ![](https://user-images.githubusercontent.com/1475173/39884369-3749d112-54bc-11e8-8dc0-e07733b74e56.png)
 
@@ -353,10 +349,11 @@ SSE 的支持情况要好些：
 
 ## SessionStack 是如何选择的？
 
-[SessionStack ](https://www.sessionstack.com/?utm_source=medium&utm_medium=blog&utm_content=Post-5-websockets-outro) 同时使用 WebSockets 和 HTTP，这取决于使用场景。
+[SessionStack ](https://www.sessionstack.com/?utm_source=medium&utm_medium=blog&utm_content=Post-5-websockets-outro) 同时使用 WebSockets 和 HTTP，这取决于使用场景。
 
 一旦整合 SessionStack 进网页程序，它会开始记录 DOM 变化，用户交互，JavaScript 异常，堆栈追踪，失败的网络请求以及调试信息，允许你用视频回放网页程序中的问题及发生在用户身上的一切事情。全部都是实时发生的并且要求对网页程序不会产生任何的性能影响。
 
 这意味着你可以实时加入到用户会话，而用户仍然在浏览器中。这样的情况下，我们会选择使用 HTTP，因为这并不需要双向通信（服务端把数据传输到浏览器端）。当前情况下，使用 WebSocket 就是过度使用，难以维护和扩展。
 
 然而，整合进网页程序的 SessionStack 库应用了 WebSocket（优先使用，否则回滚到 HTTP）。它会打包并且向我们的服务器发送数据，这是单向通信。在这种情况下，之所以选择 WebSocket 是因为计划中的某些产品功能可能需要进行双向通信。
+

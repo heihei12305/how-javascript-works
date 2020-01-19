@@ -12,7 +12,7 @@
 
 ## 概述
 
-[MutationObserver ](https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver) 是现代浏览器提供的用来检测 DOM 变化的网页接口。你可以使用这个接口来监听新增或者删除节点，属性更改，或者文本节点的内容更改。
+[MutationObserver ](https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver) 是现代浏览器提供的用来检测 DOM 变化的网页接口。你可以使用这个接口来监听新增或者删除节点，属性更改，或者文本节点的内容更改。
 
 可以干点啥好呢？
 
@@ -30,7 +30,7 @@
 
 在应用中集成 MutationObserver 是相当简单的。通过往构造函数 `MutationObserver` 中传入一个函数作为参数来初始化一个 MutationObserver 实例，该函数会在每次发生 DOM 发生变化的时候调用。`MutationObserver` 的函数的第一个参数即为单个批处理中的 DOM 变化集。每个变化包含了变化的类型和所发生的更改。
 
-```
+```text
 var mutationObserver = new MutationObserver(function(mutations) {
   mutations.forEach(function(mutation) {
     console.log(mutation);
@@ -46,7 +46,7 @@ var mutationObserver = new MutationObserver(function(mutations) {
 
 以下为开始监听的代码片段：
 
-```
+```text
 // 开始监听页面根元素 HTML 变化。
 mutationObserver.observe(document.documentElement, {
   attributes: true,
@@ -60,13 +60,13 @@ mutationObserver.observe(document.documentElement, {
 
 现在，假设你写了一个简单的 `div` 元素：
 
-```
+```text
 <div id="sample-div" class="test"> Simple div </div>
 ```
 
 可以使用 jQuery 来移除 div 的 `class` 属性：
 
-```
+```text
 $("#sample-div").removeAttr("class");
 ```
 
@@ -80,7 +80,7 @@ $("#sample-div").removeAttr("class");
 
 最后，如果想停止监听 DOM 变化可以使用如下方法：
 
-```
+```text
 // MutationObserver 停止监听 DOM 变化
 mutationObserver.disconnect();
 ```
@@ -119,13 +119,13 @@ mutationObserver.disconnect();
 
 首先，需要一个父级元素，在里面监听节点添加事件：
 
-```
+```text
 <div id=”container-element”></div>
 ```
 
 为了处理节点的添加，需要创建关键帧序列动画，该序动画在添加节点的时候启动：
 
-```
+```text
 @keyframes nodeInserted { 
  from { opacity: 0.99; }
  to { opacity: 1; } 
@@ -134,7 +134,7 @@ mutationObserver.disconnect();
 
 创建好关键帧之后，在需要监听的元素上应用动画。注意到那个短暂的持续时间-在浏览器端动画痕迹会非常平滑（即用户会感觉不到有动画发生）：
 
-```
+```text
 #container-element * {
  animation-duration: 0.001s;
  animation-name: nodeInserted;
@@ -145,7 +145,7 @@ mutationObserver.disconnect();
 
 我们需要创建一个函数作为事件监听器。在函数内部，开始必须使用 `event.animationName` 代码进行检查，确保是我们所监听的动画。
 
-```
+```text
 var insertionListener = function(event) {
   // 确保是所监听的动画
   if (event.animationName === "nodeInserted") {
@@ -156,7 +156,7 @@ var insertionListener = function(event) {
 
 为父元素绑定事件监听器：
 
-```
+```text
 document.addEventListener(“animationstart”, insertionListener, false); // standard + firefox
 document.addEventListener(“MSAnimationStart”, insertionListener, false); // IE
 document.addEventListener(“webkitAnimationStart”, insertionListener, false); // Chrome + Safari
@@ -169,3 +169,4 @@ CSS 动画浏览器支持情况：
 ![](https://user-images.githubusercontent.com/1475173/41054354-b6bbc696-69f0-11e8-8782-051c474bcf54.png)
 
 相比以上几种替代方案 `MutationObserver` 有几点优势。本质上，它会监听 DOM 可能发生的每个变化并且性能更优，因其会批量 DOM 变化之后才触发回调事件。总之，`MutationObserver` 的兼容性很好，并且还有一些垫片，这些垫片底层是基于 `MutationEvents` 的。
+

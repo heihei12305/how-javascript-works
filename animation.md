@@ -2,7 +2,7 @@
 
 > 原文请查阅[这里](https://blog.sessionstack.com/how-javascript-works-under-the-hood-of-css-and-js-animations-how-to-optimize-their-performance-db0e79586216)，本文采用[知识共享署名 4.0 国际许可协议](http://creativecommons.org/licenses/by/4.0/)共享，BY [Troland](https://github.com/Troland)。
 
-**这是  JavaScript 工作原理的第十三章。**
+**这是 JavaScript 工作原理的第十三章。**
 
 ## 概述
 
@@ -20,7 +20,7 @@ JavaScript 和 CSS 是创建网页动画的两条主要途径。两种不分好�
 
 我们将会以如何让元素在 X 和 X 座标上移动元素 50 像素作为小示例开始。通过持续 1 秒的 CSS 过渡来移动元素。
 
-```
+```text
 .box {
   -webkit-transform: translate(0, 0);
   -webkit-transition: -webkit-transform 1000ms;
@@ -43,7 +43,7 @@ JavaScript 和 CSS 是创建网页动画的两条主要途径。两种不分好�
 
 如下元素：
 
-```
+```text
 <div class="box">
   Sample content.
 </div>
@@ -51,7 +51,7 @@ JavaScript 和 CSS 是创建网页动画的两条主要途径。两种不分好�
 
 然后，使用 JavaScript 来切换每个动画。
 
-```
+```text
 var boxElements = document.getElementsByClassName('box'),
     boxElementsLength = boxElements.length,
     i;
@@ -69,7 +69,7 @@ for (i = 0; i < boxElementsLength; i++) {
 
 如下监听 `transitioned` 事件，该事件会在动画结束时触发。
 
-```
+```text
 var boxElement = document.querySelector('.box'); // 获取第一个包含 box 类的元素
 boxElement.addEventListener('transitionend', onTransitionEnd, false);
 
@@ -84,7 +84,7 @@ function onTransitionEnd() {
 
 看下例子：
 
-```
+```text
 /**
  * 该示例是没有包含浏览器前缀的精简版。加上以后会更加准确些。
  *
@@ -125,11 +125,11 @@ function onTransitionEnd() {
 }
 ```
 
-效果示例－<https://sessionstack.github.io/blog/demos/keyframes/>
+效果示例－[https://sessionstack.github.io/blog/demos/keyframes/](https://sessionstack.github.io/blog/demos/keyframes/)
 
 通过使用 CSS 动画定义独立于目标元素的动画本身，然后设置元素的 animation-name 属性来使用想要的动画效果。
 
-CSS 动画仍然是需要加浏览器前缀的，在 Safari, Safari 移动浏览器和 Android 端添加 `-webkit-` 前缀。Chrome, Opera, Internet Explorer, and Firefox 端全部不需要添加前缀。有很多工具可以用来创建包含任意前缀的样式，这样就不需要在源文件中带样式前缀。
+CSS 动画仍然是需要加浏览器前缀的，在 Safari, Safari 移动浏览器和 Android 端添加 `-webkit-` 前缀。Chrome, Opera, Internet Explorer, and Firefox 端全部不需要添加前缀。有很多工具可以用来创建包含任意前缀的样式，这样就不需要在源文件中带样式前缀。
 
 **可以使用 autoprefixer 或者 cssnext 来自动为样式添加前缀。**
 
@@ -139,7 +139,7 @@ CSS 动画仍然是需要加浏览器前缀的，在 Safari, Safari 移动浏览
 
 一般情况下，可以内联 JavaScript 动画作为代码的一部分。也可以把它们封装在其它对象之中。以下为复现之前描述的 CSS 过渡的 JavaScript 代码：
 
-```
+```text
 var boxElement = document.querySelector('.box');
 var animation = boxElement.animate([
   {transform: 'translate(0)'},
@@ -150,7 +150,7 @@ animation.addEventListener('finish', function() {
 });
 ```
 
-默认情况下，网页动画只是修改了元素的展示效果。如果想要让元素停留在其移动到的目标位置，那么就得在动画结束的时候修改其底层样式。这也是为什么在以上的示例中监听 `finish` 事件然后设置` box.style.transform` 属性为 `translate(150px, 200px)` 的原因，该属性值和 CSS 动画执行的第二个样式转换是一样的。
+默认情况下，网页动画只是修改了元素的展示效果。如果想要让元素停留在其移动到的目标位置，那么就得在动画结束的时候修改其底层样式。这也是为什么在以上的示例中监听 `finish` 事件然后设置`box.style.transform` 属性为 `translate(150px, 200px)` 的原因，该属性值和 CSS 动画执行的第二个样式转换是一样的。
 
 通过使用 JavaScript 动画，可以完全控制每一步元素的样式。这意味着可以随心所欲地减速，暂停，停止或者翻转动画进而操作目标元素。由于可以适当地封装动画行为，所以当在构建复杂面向对象的应用程序的时候会特别有用。
 
@@ -242,7 +242,7 @@ Easing 可以使得动画更加自然平滑。
 
 ## 贝塞尔曲线
 
-让我们看一下贝塞尔曲线的运行原理。一条贝塞尔曲线包含四个点，或者准确地说是包含两组数值。每一对数值内包含表示三次贝塞尔曲线控制点的 X 和 Y 坐标。贝塞尔曲线的起点坐标为 (0, 0) ，终点坐标为 (1, 1)。可以设置两组数值对。每个控制点的 X 轴值必须在 [0, 1] 之间，而 Y 轴值可以超过 [0, 1]，虽然规范并没有明确允许超过的数值。即使每个控制点的 X 和 Y 值的微小差异都会输出完全不同的贝塞尔曲线。
+让我们看一下贝塞尔曲线的运行原理。一条贝塞尔曲线包含四个点，或者准确地说是包含两组数值。每一对数值内包含表示三次贝塞尔曲线控制点的 X 和 Y 坐标。贝塞尔曲线的起点坐标为 \(0, 0\) ，终点坐标为 \(1, 1\)。可以设置两组数值对。每个控制点的 X 轴值必须在 \[0, 1\] 之间，而 Y 轴值可以超过 \[0, 1\]，虽然规范并没有明确允许超过的数值。即使每个控制点的 X 和 Y 值的微小差异都会输出完全不同的贝塞尔曲线。
 
 查看维基百科关于[贝塞尔曲线](https://en.wikipedia.org/wiki/B%C3%A9zier_curve)的说明，通俗一点讲即，现在所说的即三次贝塞尔曲线，该曲线由四个点组成，P0, P1, P2, P3 组成，那么，P0 和 P1 组成一对，P2 和 P3 组成一对，P1 和 P2 即为控制点，P0 和 P3 即为起始和结束节点。如下图所示：
 
@@ -256,7 +256,7 @@ Easing 可以使得动画更加自然平滑。
 
 ![](https://user-images.githubusercontent.com/1475173/42127236-1e45015e-7cc7-11e8-81e9-9fa6728dea26.png)
 
-如你所见，两张图有很大不同。第一个控制点矢量差异为 (0.045, 0.183)，而第二个控制点矢量差异为 (-0.427, -0.054)。
+如你所见，两张图有很大不同。第一个控制点矢量差异为 \(0.045, 0.183\)，而第二个控制点矢量差异为 \(-0.427, -0.054\)。
 
 第二条曲线的样式为：
 
@@ -278,7 +278,7 @@ Easing 可以使得动画更加自然平滑。
 
 为 transforms 和 opacity 添加 `will-change` 代码如下：
 
-```
+```text
 .box {
   will-change: transform, opacity;
 }
@@ -310,10 +310,11 @@ Easing 可以使得动画更加自然平滑。
 
 ## 引用资源
 
-- <https://developers.google.com/web/fundamentals/design-and-ux/animations/css-vs-javascript>
-- <https://developers.google.com/web/fundamentals/design-and-ux/animations/>
-- <https://developers.google.com/web/fundamentals/design-and-ux/animations/animations-and-performance>
+* [https://developers.google.com/web/fundamentals/design-and-ux/animations/css-vs-javascript](https://developers.google.com/web/fundamentals/design-and-ux/animations/css-vs-javascript)
+* [https://developers.google.com/web/fundamentals/design-and-ux/animations/](https://developers.google.com/web/fundamentals/design-and-ux/animations/)
+* [https://developers.google.com/web/fundamentals/design-and-ux/animations/animations-and-performance](https://developers.google.com/web/fundamentals/design-and-ux/animations/animations-and-performance)
 
 ## 疑问
 
 可以看下网上的这篇介绍[贝塞尔曲线](http://www.html-js.com/article/1628)的文章，那么可以如何使用贝塞尔曲线来做出令人惊叹的动画呢？
+
